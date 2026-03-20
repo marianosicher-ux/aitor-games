@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamburger Challenge | Aitor Games</title>
+    <style>
+        /* Estilos Base del Portal */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b0e18;
+            color: white;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navegación (Igual al Home) */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background-color: rgba(11, 14, 24, 0.95);
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn-unirse {
+            background: linear-gradient(90deg, #9b30ff, #7022c4);
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Encabezado del Juego */
+        .game-header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            font-style: italic;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .game-subtitle {
+            display: inline-block;
+            background: #2a1b4d;
+            color: #b080ff;
+            padding: 4px 15px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        /* Contenedor del Juego (El marco neón) */
+        #game-wrapper {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        #game-container {
+            width: 90%;
+            max-width: 1000px;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(155, 48, 255, 0.5), inset 0 0 20px rgba(0,0,0,1);
+            border: 4px solid #9b30ff;
+        }
+
+        /* UI interna del juego (ajustada para el contenedor) */
+        #game-ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #1a2a1a;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px;
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: 5;
+            font-size: 0.8rem;
+        }
+
+        #instructions-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        #instructions-overlay h2 { color: #fff; font-size: 2rem; margin-bottom: 10px; }
+        #instructions-overlay p { color: #ccc; }
+
+        /* Footer de Controles (Igual al de Mr. Cupcake) */
+        .controls-footer {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 20px;
+            background: rgba(11, 14, 24, 0.5);
+            font-size: 0.9rem;
+            color: #a0a0ff;
+        }
+
+        .control-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .icon {
+            font-size: 1.2rem;
+            color: #9b30ff;
+        }
+
+        /* Elementos del Juego */
+        #crosshair {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 8px; height: 8px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .item { opacity: 0.4; }
+        .active { color: #d35400; font-weight: bold; opacity: 1; }
+        .completed { color: #27ae60; text-decoration: line-through; opacity: 1; }
+
+        /* Pantallas Finales */
+        .end-screen {
+            display: none;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            color: #333;
+            z-index: 20;
+            width: 300px;
+        }
+
+        .btn-restart {
+            background: #9b30ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navegación -->
+    <nav>
+        <div class="logo"><span style="color: #9b30ff;">🎮</span> AITOR GAMES</div>
+        <div class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="index.html#joyas">Juegos</a>
+        </div>
+        <a href="#" class="btn-unirse">Unirse</a>
+    </nav>
+
+    <!-- Header del Juego -->
+    <div class="game-header">
+        <h1 class="game-title">HAMBURGER CHALLENGE</h1>
+        <div class="game-subtitle">BY STUDIO SICHE MICHE</div>
+    </div>
+
+    <!-- Contenedor del Juego -->
+    <div id="game-wrapper">
+        <div id="game-container">
+            <!-- Interfaz Interna -->
+            <div id="game-ui">
+                <div id="checklist">
+                    <div id="step-0" class="item active">🥬 Lechuga</div>
+                    <div id="step-1" class="item">🍅 Tomate</div>
+                    <div id="step-2" class="item">🧀 Queso</div>
+                    <div id="step-3" class="item">🥩 Carne</div>
+                    <div id="step-4" class="item">🍞 Pan</div>
+                    <div id="step-5" class="item">👨‍🍳 SOBREVIVIR</div>
+                </div>
+                <div style="margin-top:5px;">Distancia: <span id="dist-val">---</span>m</div>
+                <div id="timer-ui" style="display:none; color: red;">TIEMPO: <span id="time-val">40</span>s</div>
+            </div>
+
+            <div id="crosshair"></div>
+
+            <div id="instructions-overlay">
+                <h2>¡DALE PLAY!</h2>
+                <p>Hacé click para capturar el mouse y empezar</p>
+                <p style="font-size: 0.8rem; margin-top: 10px; color: #9b30ff;">(Usa Q para cambiar cámara)</p>
+            </div>
+
+            <!-- Pantallas de fin -->
+            <div id="victory-screen" class="end-screen">
+                <h2 style="color: #27ae60;">¡GANASTE!</h2>
+                <p>Escapaste del Chef a tiempo.</p>
+                <button class="btn-restart" onclick="location.reload()">REINTENTAR</button>
+            </div>
+
+            <div id="game-over-screen" class="end-screen">
+                <h2 style="color: #c0392b;">¡PERDISTE!</h2>
+                <p>El Chef te atrapó.</p>
+                <button class="btn-restart" onclick="location.reload()">REINTENTAR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer de Controles -->
+    <div class="controls-footer">
+        <div class="control-item">
+            <span class="icon">⌨️</span> <b>WASD:</b> Caminar
+        </div>
+        <div class="control-item">
+            <span class="icon">⌨️</span> <b>Espacio:</b> Saltar
+        </div>
+        <div class="control-item">
+            <span class="icon">🖱️</span> <b>Mouse:</b> Mirar
+        </div>
+        <div class="control-item">
+            <span class="icon">⌨️</span> <b>Q:</b> Cámara
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene, camera, renderer, clock;
+        let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false, canJump = false;
+        let velocity = new THREE.Vector3();
+        let direction = new THREE.Vector3();
+        let euler = new THREE.Euler(0, 0, 0, 'YXZ');
+        let controlsEnabled = false;
+
+        let isThirdPerson = false;
+        let playerMesh; 
+        const ingredients = [];
+        const staticObjects = []; 
+        let currentStep = 0;
+        let chefBoss = null;
+        let timeLeft = 40;
+        let gameEnded = false;
+
+        const container = document.getElementById('game-container');
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xa0d8ef); 
+            scene.fog = new THREE.Fog(0xa0d8ef, 10, 150);
+
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            clock = new THREE.Clock();
+
+            // Iluminación
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const sun = new THREE.DirectionalLight(0xffffff, 0.8);
+            sun.position.set(50, 100, 50);
+            sun.castShadow = true;
+            scene.add(sun);
+
+            const ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(800, 800),
+                new THREE.MeshStandardMaterial({ color: 0x3d6e35 })
+            );
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            createPlayer();
+            createWorld();
+            spawnIngredients();
+            createChef();
+
+            setupControls();
+            window.addEventListener('resize', onWindowResize, false);
+            animate();
+        }
+
+        function createPlayer() {
+            playerMesh = new THREE.Group();
+            const mesh = new THREE.Mesh(
+                new THREE.CylinderGeometry(1.2, 1.2, 0.4, 20),
+                new THREE.MeshStandardMaterial({ color: 0xedbf83 })
+            );
+            mesh.castShadow = true;
+            playerMesh.add(mesh);
+            scene.add(playerMesh);
+            playerMesh.position.set(0, 0.2, 0);
+        }
+
+        function createWorld() {
+            for(let i=0; i<200; i++) {
+                const rx = (Math.random() - 0.5) * 600;
+                const rz = (Math.random() - 0.5) * 600;
+                if (Math.sqrt(rx*rx + rz*rz) < 15) continue;
+
+                if (Math.random() > 0.3) {
+                    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.7, 7), new THREE.MeshStandardMaterial({color: 0x4b3621}));
+                    const leaves = new THREE.Mesh(new THREE.ConeGeometry(3.5, 9), new THREE.MeshStandardMaterial({color: 0x1b4d1b}));
+                    const tree = new THREE.Group();
+                    trunk.position.y = 3.5; leaves.position.y = 8;
+                    tree.add(trunk); tree.add(leaves);
+                    tree.position.set(rx, 0, rz);
+                    scene.add(tree);
+                    staticObjects.push(tree);
+                }
+            }
+        }
+
+        function spawnIngredients() {
+            const positions = [new THREE.Vector3(50,0.5,50), new THREE.Vector3(-80,0.5,-30), new THREE.Vector3(20,0.5,-100), new THREE.Vector3(-110,0.5,90), new THREE.Vector3(150,0.5,150)];
+            const colors = [0x2ecc71, 0xff0000, 0xf1c40f, 0x5d4037, 0xedbf83];
+            positions.forEach((pos, i) => {
+                const ing = new THREE.Group();
+                const mesh = new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.5,16), new THREE.MeshStandardMaterial({color: colors[i]}));
+                ing.add(mesh);
+                ing.position.copy(pos);
+                ing.userData = { id: i };
+                ing.visible = (i === 0);
+                scene.add(ing);
+                ingredients.push(ing);
+            });
+        }
+
+        function createChef() {
+            chefBoss = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.CylinderGeometry(1, 1.5, 5), new THREE.MeshStandardMaterial({color: 0xffffff}));
+            const head = new THREE.Mesh(new THREE.SphereGeometry(1), new THREE.MeshStandardMaterial({color: 0xffdbac}));
+            head.position.y = 3.5; chefBoss.add(body); chefBoss.add(head);
+            chefBoss.position.set(0, -50, 0); chefBoss.visible = false;
+            scene.add(chefBoss);
+        }
+
+        function setupControls() {
+            const overlay = document.getElementById('instructions-overlay');
+            overlay.addEventListener('click', () => {
+                if (!gameEnded) container.requestPointerLock().catch(()=>{});
+            });
+
+            document.addEventListener('pointerlockchange', () => {
+                controlsEnabled = (document.pointerLockElement === container);
+                overlay.style.display = (controlsEnabled || gameEnded) ? 'none' : 'flex';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!controlsEnabled) return;
+                euler.setFromQuaternion(camera.quaternion);
+                euler.y -= e.movementX * 0.002;
+                euler.x -= e.movementY * 0.002;
+                euler.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, euler.x));
+                playerMesh.rotation.y = euler.y;
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.code === 'KeyW') moveForward = true;
+                if (e.code === 'KeyS') moveBackward = true;
+                if (e.code === 'KeyA') moveLeft = true;
+                if (e.code === 'KeyD') moveRight = true;
+                if (e.code === 'Space' && canJump) { velocity.y = 12; canJump = false; }
+                if (e.code === 'KeyQ') { isThirdPerson = !isThirdPerson; document.getElementById('crosshair').style.display = isThirdPerson ? 'none' : 'block'; }
+            });
+
+            window.addEventListener('keyup', (e) => {
+                if (e.code === 'KeyW') moveForward = false;
+                if (e.code === 'KeyS') moveBackward = false;
+                if (e.code === 'KeyA') moveLeft = false;
+                if (e.code === 'KeyD') moveRight = false;
+            });
+        }
+
+        function onWindowResize() {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            if (controlsEnabled && !gameEnded) {
+                velocity.x -= velocity.x * 10.0 * delta;
+                velocity.z -= velocity.z * 10.0 * delta;
+                if (!canJump) velocity.y -= 30.0 * delta;
+
+                direction.z = Number(moveForward) - Number(moveBackward);
+                direction.x = Number(moveRight) - Number(moveLeft);
+                direction.normalize();
+
+                if (moveForward || moveBackward) velocity.z -= direction.z * 200.0 * delta;
+                if (moveLeft || moveRight) velocity.x -= direction.x * 200.0 * delta;
+
+                const forward = new THREE.Vector3(0,0,-1).applyEuler(new THREE.Euler(0, euler.y, 0));
+                const right = new THREE.Vector3(1,0,0).applyEuler(new THREE.Euler(0, euler.y, 0));
+                
+                const moveVec = new THREE.Vector3().addScaledVector(forward, -velocity.z * delta).addScaledVector(right, -velocity.x * delta);
+                
+                let collision = false;
+                staticObjects.forEach(obj => { if (new THREE.Vector2(playerMesh.position.x + moveVec.x - obj.position.x, playerMesh.position.z + moveVec.z - obj.position.z).length() < 2) collision = true; });
+
+                if (!collision) { playerMesh.position.x += moveVec.x; playerMesh.position.z += moveVec.z; }
+                
+                playerMesh.position.y += velocity.y * delta;
+                if (playerMesh.position.y < 0.2) { velocity.y = 0; playerMesh.position.y = 0.2; canJump = true; }
+
+                if (isThirdPerson) {
+                    const offset = new THREE.Vector3(0, 5, 10).applyEuler(new THREE.Euler(0, euler.y, 0));
+                    camera.position.copy(playerMesh.position).add(offset);
+                    camera.lookAt(playerMesh.position.x, playerMesh.position.y + 1, playerMesh.position.z);
+                    playerMesh.visible = true;
+                } else {
+                    camera.position.copy(playerMesh.position).y += 1.5;
+                    camera.quaternion.setFromEuler(euler);
+                    playerMesh.visible = false;
+                }
+                checkCollisions(delta);
+            }
+            ingredients.forEach(ing => { if (ing.visible) ing.rotation.y += delta; });
+            renderer.render(scene, camera);
+        }
+
+        function checkCollisions(delta) {
+            if (currentStep < 5) {
+                const target = ingredients.find(i => i.userData.id === currentStep);
+                const dist = playerMesh.position.distanceTo(target.position);
+                document.getElementById('dist-val').innerText = Math.floor(dist);
+                if (dist < 3) {
+                    target.visible = false;
+                    document.getElementById(`step-${currentStep}`).className = 'item completed';
+                    currentStep++;
+                    if (currentStep < 5) { ingredients.find(i => i.userData.id === currentStep).visible = true; document.getElementById(`step-${currentStep}`).className = 'item active'; }
+                    else { startChef(); }
+                }
+            } else if (currentStep === 5) {
+                timeLeft -= delta;
+                document.getElementById('time-val').innerText = Math.max(0, Math.ceil(timeLeft));
+                const distChef = playerMesh.position.distanceTo(chefBoss.position);
+                document.getElementById('dist-val').innerText = Math.floor(distChef);
+                if (timeLeft <= 0) { win(); }
+                else if (distChef < 3.5) { lose(); }
+                const dir = new THREE.Vector3().subVectors(playerMesh.position, chefBoss.position).normalize();
+                chefBoss.position.add(dir.multiplyScalar(8.5 * delta));
+                chefBoss.lookAt(playerMesh.position.x, 0.2, playerMesh.position.z);
+            }
+        }
+
+        function startChef() {
+            document.getElementById('step-5').className = 'item active';
+            document.getElementById('timer-ui').style.display = 'block';
+            chefBoss.visible = true; chefBoss.position.set(playerMesh.position.x + 30, 0.2, playerMesh.position.z + 30);
+        }
+
+        function win() { gameEnded = true; document.getElementById('victory-screen').style.display = 'block'; document.exitPointerLock(); }
+        function lose() { gameEnded = true; document.getElementById('game-over-screen').style.display = 'block'; document.exitPointerLock(); }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

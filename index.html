@@ -3,260 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aitor Games | Tu Portal de Juegos</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Aitor Games Lab | Studio Siche Miche</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;700&family=Luckiest+Guy&display=swap');
-
-        :root {
-            --primary: #8b5cf6;
-            --secondary: #1e1b4b;
-            --accent: #d8b4fe;
-            --bg-dark: #0f172a;
-        }
-
+        /* Estilos Globales */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b0e18;
+            color: white;
             scroll-behavior: smooth;
         }
 
-        .font-heading {
-            font-family: 'Rajdhani', sans-serif;
+        /* Navegación */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: rgba(11, 14, 24, 0.95);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .logo {
+            font-weight: bold;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.3);
+        .nav-links {
+            display: flex;
+            gap: 30px;
         }
 
-        .gradient-text {
-            background: linear-gradient(90deg, #a78bfa, #f472b6);
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #9b30ff;
+        }
+
+        .btn-unirse {
+            background: linear-gradient(90deg, #9b30ff, #7022c4);
+            padding: 10px 25px;
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .btn-unirse:hover {
+            transform: scale(1.05);
+        }
+
+        /* Sección Hero */
+        .hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, #1a1f35 0%, #0b0e18 100%);
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            font-style: italic;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, #9b30ff, #ff4d94);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Contenedor del Juego optimizado */
-        #game-wrapper {
-            display: none;
-            width: 100%;
-            max-width: 820px;
-            margin: 2rem auto;
+        .hero p {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            max-width: 600px;
+            margin: 20px 0 40px;
+        }
+
+        .hero .btn-main {
+            background: #9b30ff;
+            color: white;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(155, 48, 255, 0.4);
+            transition: all 0.3s;
+        }
+
+        .hero .btn-main:hover {
+            background: #b04dff;
+            box-shadow: 0 0 30px rgba(155, 48, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
+        /* Sección JOYAS */
+        #joyas {
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .joyas-title {
+            font-style: italic;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+        }
+
+        .joyas-divider {
+            width: 80px;
+            height: 4px;
+            background: #9b30ff;
+            margin: 0 auto 60px;
+            border-radius: 2px;
+        }
+
+        .grid-juegos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #161b29;
+            border-radius: 25px;
+            width: 380px;
+            overflow: hidden;
+            text-align: left;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 45px rgba(155, 48, 255, 0.2);
+        }
+
+        .card-header {
+            padding: 50px;
+            text-align: center;
             position: relative;
-            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        iframe {
-            width: 100%;
-            height: 520px; /* Un toque más alto para que no corte nada */
-            border: 6px solid #8b5cf6;
-            border-radius: 1.5rem;
-            box-shadow: 0 0 50px rgba(139, 92, 246, 0.4);
-            background: #111;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 4px;
-        }
-
-        .btn-knockout {
-            font-family: 'Luckiest Guy', cursive;
+        .badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #00ff88;
+            color: #0b0e18;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
             letter-spacing: 1px;
+        }
+
+        .card-icon {
+            font-size: 100px;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .card-body h3 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .card-body p {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 20px 0 30px;
+            height: 70px; /* Alineación de textos */
+        }
+
+        .btn-card {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 18px;
+            text-align: center;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: opacity 0.3s;
+        }
+
+        .btn-card:hover {
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px;
+            text-align: center;
+            border-top: 1px solid #1a1f35;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            nav { padding: 20px; }
+            .nav-links { display: none; }
+            .card { width: 100%; }
         }
     </style>
 </head>
-<body class="custom-scrollbar">
-
-    <!-- Modal de Login -->
-    <div id="login-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-        <div class="glass-card max-w-md w-full p-8 rounded-3xl border border-purple-500/30 text-center">
-            <div class="mb-6">
-                <i class="fas fa-user-circle text-6xl text-purple-500 mb-4"></i>
-                <h2 class="font-heading text-3xl font-bold uppercase tracking-tight text-white">Iniciar Sesión</h2>
-                <p class="text-gray-400">Unite a la comunidad de Aitor Games.</p>
-            </div>
-            <div class="space-y-4 mb-6">
-                <input id="player-name" type="text" placeholder="Nombre de Jugador" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500 transition text-center">
-            </div>
-            <button id="btn-confirm-login" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-purple-900/40 uppercase tracking-widest">
-                INGRESAR AHORA
-            </button>
-            <button onclick="closeLoginModal()" class="mt-4 text-gray-500 hover:text-white text-sm transition font-medium">Tal vez más tarde</button>
-        </div>
-    </div>
+<body>
 
     <!-- Navegación -->
-    <nav class="sticky top-0 z-50 glass-card px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-            <i class="fas fa-gamepad text-3xl text-purple-500"></i>
-            <span class="font-heading text-2xl font-bold tracking-wider uppercase">Aitor <span class="text-purple-500">Games</span></span>
+    <nav>
+        <div class="logo">
+            <span style="color: #9b30ff;">🎮</span> AITOR GAMES
         </div>
-        <div class="hidden md:flex space-x-8 font-medium">
-            <a href="#inicio" class="hover:text-purple-400 transition">Inicio</a>
-            <a href="#biblioteca" class="hover:text-purple-400 transition">Juegos</a>
+        <div class="nav-links">
+            <a href="#">Inicio</a>
+            <a href="#joyas">Juegos</a>
         </div>
-        <div class="flex items-center space-x-4">
-            <div id="user-info" class="hidden flex items-center space-x-3 bg-slate-800/50 px-4 py-2 rounded-full border border-purple-500/30">
-                <span id="display-user-id" class="text-xs font-mono text-purple-300"></span>
-                <button onclick="logout()" class="text-gray-400 hover:text-red-400 transition">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
-            <button id="btn-unirse" onclick="openLoginModal()" class="bg-purple-600 hover:bg-purple-700 px-5 py-2 rounded-full font-semibold transition text-sm shadow-lg shadow-purple-900/40">
-                Unirse
-            </button>
-        </div>
+        <a href="#" class="btn-unirse">Unirse</a>
     </nav>
 
-    <!-- Hero -->
-    <section id="inicio" class="relative py-20 px-6 overflow-hidden">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-purple-900/20 blur-[120px] rounded-full -z-10"></div>
-        <div class="max-w-6xl mx-auto text-center">
-            <h1 class="font-heading text-5xl md:text-7xl font-bold mb-6 italic tracking-tighter text-white uppercase">Aitor <span class="gradient-text italic">Games</span> Lab</h1>
-            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-light">
-                El portal oficial de <span class="text-pink-400 font-bold">Studio Siche Miche</span>. <br> 
-                Disfrutá de la mejor experiencia arcade desde tu navegador.
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <button onclick="showGame()" class="bg-purple-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-purple-500 transition shadow-lg shadow-purple-900/40 btn-knockout text-xl uppercase">JUGAR MR. CUPCAKE</button>
-            </div>
-        </div>
+    <!-- Sección Hero -->
+    <section class="hero">
+        <h1>AITOR <span>GAMES</span> LAB</h1>
+        <p>El portal oficial de <b>Studio Siche Miche</b>. Disfrutá de la mejor experiencia arcade desde tu navegador.</p>
+        <a href="#joyas" class="btn-main">JUGAR AHORA</a>
     </section>
 
-    <!-- Game Section -->
-    <section id="game-section" class="hidden py-10 px-6">
-        <div class="max-w-6xl mx-auto text-center">
-            <div class="mb-8">
-                <h2 class="font-heading text-5xl font-bold text-pink-400 inline-block mr-2 uppercase tracking-tighter">MR. CUPCAKE</h2>
-                <div class="block md:inline-block mt-2">
-                    <span class="bg-purple-500/20 text-purple-300 text-xs px-4 py-1.5 rounded-full border border-purple-500/30 font-bold uppercase tracking-widest shadow-inner">by Studio Siche Miche</span>
-                </div>
-            </div>
+    <!-- Sección NUESTRAS JOYAS -->
+    <section id="joyas">
+        <h2 class="joyas-title">NUESTRAS JOYAS</h2>
+        <div class="joyas-divider"></div>
+
+        <div class="grid-juegos">
             
-            <div id="game-wrapper">
-                <iframe id="game-iframe" src="" title="Mr Cupcake Game" scrolling="no"></iframe>
+            <!-- TARJETA MR CUPCAKE -->
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, #3a1c5e, #161b29);">
+                    <span class="badge">JUGABLE</span>
+                    <span class="card-icon">🧁</span>
+                </div>
+                <div class="card-body">
+                    <h3>MR CUPCAKE <span style="color: #ff4d94; font-size: 1rem; font-weight: normal;">ADVENTURE</span></h3>
+                    <p>El shooter de plataformas más dulce y frenético. 10 niveles de pura acción eléctrica en la cocina.</p>
+                    <a href="mr_cupcake.html" class="btn-card" style="background: #e91e63;">ENTRAR AL COMBATE</a>
+                </div>
             </div>
-            
-            <div class="mt-8 flex flex-wrap justify-center gap-8 text-gray-400 text-sm font-medium">
-                <div class="flex items-center"><i class="fas fa-keyboard text-purple-500 mr-2 text-lg"></i> Z: Volar / X: Disparar</div>
-                <div class="flex items-center"><i class="fas fa-arrows-alt text-purple-500 mr-2 text-lg"></i> Flechas: Moverse</div>
-                <div class="flex items-center"><i class="fas fa-pause text-purple-500 mr-2 text-lg"></i> Esc: Pausa</div>
+
+            <!-- TARJETA HAMBURGUESA CHALLENGE -->
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, #5e4a1c, #161b29);">
+                    <span class="badge">JUGABLE</span>
+                    <span class="card-icon">🍔</span>
+                </div>
+                <div class="card-body">
+                    <h3>HAMBURGER <span style="color: #f1c40f; font-size: 1rem; font-weight: normal;">CHALLENGE</span></h3>
+                    <p>Un desafío de exploración 3D en el bosque. Encontrá los ingredientes y escapá del Chef antes que se acabe el tiempo.</p>
+                    <a href="hamburguesa_challenge.html" class="btn-card" style="background: #9b30ff;">ENTRAR AL DESAFÍO</a>
+                </div>
             </div>
+
         </div>
     </section>
 
-    <!-- Galería -->
-    <section id="biblioteca" class="py-20 px-6 max-w-7xl mx-auto">
-        <div class="text-center mb-16">
-            <h2 class="font-heading text-4xl font-bold uppercase tracking-widest text-white italic">Nuestras Joyas</h2>
-            <div class="h-1 w-20 bg-purple-600 mx-auto mt-4 rounded-full"></div>
-        </div>
-
-        <div class="flex justify-center">
-            <div class="game-card glass-card rounded-3xl overflow-hidden transition-all duration-500 border border-pink-500/20 max-w-md w-full group cursor-pointer" onclick="showGame()">
-                <div class="h-64 bg-gradient-to-br from-pink-600/20 to-purple-900/60 flex flex-col items-center justify-center relative overflow-hidden">
-                    <div class="text-9xl transform group-hover:scale-110 group-hover:rotate-12 transition duration-500">🧁</div>
-                    <span class="bg-green-500 text-[11px] font-bold px-4 py-1 rounded-full uppercase absolute top-6 right-6 shadow-lg shadow-green-900/40">Jugable</span>
-                </div>
-                <div class="p-8">
-                    <h3 class="text-3xl font-bold mb-3 text-white font-heading tracking-tight uppercase">Mr Cupcake <span class="text-pink-400 text-xl font-normal underline decoration-pink-500/30">Adventure</span></h3>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-8">El shooter de plataformas más dulce y frenético de Studio Siche Miche. 10 niveles de pura acción eléctrica.</p>
-                    <button class="w-full bg-pink-600 group-hover:bg-pink-500 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-pink-900/30 btn-knockout uppercase text-lg tracking-wider">Entrar al Combate</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="py-16 px-6 border-t border-gray-800/50 mt-20">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center opacity-60">
-            <p class="text-gray-500 text-sm font-medium">© 2024 Aitor Games. Desarrollado por Aitor con Studio Siche Miche.</p>
-            <div class="flex space-x-6 mt-4 md:mt-0 text-xl">
-                <i class="fab fa-github hover:text-white cursor-pointer transition"></i>
-                <i class="fab fa-discord hover:text-white cursor-pointer transition"></i>
-            </div>
-        </div>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Studio Siche Miche. Desarrollado por Aitor Games Lab.</p>
     </footer>
 
-    <!-- Lógica del Portal -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-        // Manejo de errores de configuración para que Cursor no rompa el script
-        let auth = null;
-        try {
-            if (typeof __firebase_config !== 'undefined') {
-                const firebaseConfig = JSON.parse(__firebase_config);
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-
-                onAuthStateChanged(auth, (user) => {
-                    const btnUnirse = document.getElementById('btn-unirse');
-                    const userInfo = document.getElementById('user-info');
-                    if (user) {
-                        if(btnUnirse) btnUnirse.classList.add('hidden');
-                        if(userInfo) userInfo.classList.remove('hidden');
-                        const display = document.getElementById('display-user-id');
-                        if(display) display.innerText = `JUGADOR: ${user.uid.substring(0, 8)}`;
-                        closeLoginModal();
-                    } else {
-                        if(btnUnirse) btnUnirse.classList.remove('hidden');
-                        if(userInfo) userInfo.classList.add('hidden');
-                    }
-                });
-            }
-        } catch (e) {
-            console.warn("Firebase no configurado o error en carga local.");
-        }
-
-        window.openLoginModal = () => document.getElementById('login-modal').style.display = 'flex';
-        window.closeLoginModal = () => document.getElementById('login-modal').style.display = 'none';
-        window.logout = () => { if(auth) signOut(auth); };
-
-        document.getElementById('btn-confirm-login').addEventListener('click', async () => {
-            if(auth) {
-                try { await signInAnonymously(auth); } catch(e) { console.error(e); }
-            } else {
-                alert("Modo Invitado Activo (Servidor local)");
-                closeLoginModal();
-            }
-        });
-
-        // --- Lógica para mostrar el juego ---
-        window.showGame = () => {
-            const section = document.getElementById('game-section');
-            const wrapper = document.getElementById('game-wrapper');
-            const iframe = document.getElementById('game-iframe');
-
-            // Mostrar secciones
-            section.classList.remove('hidden');
-            wrapper.style.display = 'block';
-
-            // Cargar el iframe solo cuando el usuario hace clic para ahorrar recursos
-            if (iframe.src === "" || iframe.src !== window.location.href + "mr_cupcake.html") {
-                iframe.src = "mr_cupcake.html"; 
-            }
-
-            // Scroll suave a la arena de combate
-            setTimeout(() => {
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        };
-    </script>
 </body>
 </html>
