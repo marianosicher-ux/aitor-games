@@ -20,7 +20,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 50px;
+            padding: 15px 50px; /* Reducido un poco */
             background-color: rgba(11, 14, 24, 0.95);
             position: sticky;
             top: 0;
@@ -29,7 +29,7 @@
 
         .logo {
             font-weight: bold;
-            font-size: 1.5rem;
+            font-size: 1.3rem; /* Un toque más chico */
             display: flex;
             align-items: center;
             gap: 10px;
@@ -55,7 +55,7 @@
 
         .btn-unirse {
             background: linear-gradient(90deg, #9b30ff, #7022c4);
-            padding: 10px 25px;
+            padding: 8px 20px;
             border-radius: 25px;
             color: white;
             text-decoration: none;
@@ -63,13 +63,9 @@
             transition: transform 0.2s;
         }
 
-        .btn-unirse:hover {
-            transform: scale(1.05);
-        }
-
-        /* Sección Hero */
+        /* Sección Hero ACHICADA */
         .hero {
-            height: 80vh;
+            height: 45vh; /* Bajamos de 80vh a 45vh */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -80,11 +76,11 @@
         }
 
         .hero h1 {
-            font-size: 5rem;
+            font-size: 3.5rem; /* Achicamos la fuente un poco */
             font-style: italic;
             font-weight: 900;
             margin: 0;
-            letter-spacing: -2px;
+            letter-spacing: -1px;
             text-transform: uppercase;
         }
 
@@ -95,50 +91,49 @@
         }
 
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #a0a0a0;
-            max-width: 600px;
-            margin: 20px 0 40px;
+            max-width: 500px;
+            margin: 15px 0 30px;
         }
 
         .hero .btn-main {
             background: #9b30ff;
             color: white;
             text-decoration: none;
-            padding: 15px 40px;
-            border-radius: 12px;
+            padding: 12px 30px;
+            border-radius: 10px;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1rem;
             text-transform: uppercase;
-            box-shadow: 0 0 20px rgba(155, 48, 255, 0.4);
+            box-shadow: 0 0 15px rgba(155, 48, 255, 0.4);
             transition: all 0.3s;
         }
 
         .hero .btn-main:hover {
             background: #b04dff;
-            box-shadow: 0 0 30px rgba(155, 48, 255, 0.6);
-            transform: translateY(-3px);
+            transform: translateY(-2px);
         }
 
-        /* Sección JOYAS */
+        /* Sección JOYAS AJUSTADA */
         #joyas {
-            padding: 100px 20px;
+            padding: 40px 20px; /* Reducido de 100px a 40px */
             text-align: center;
         }
 
         .joyas-title {
             font-style: italic;
             letter-spacing: 3px;
-            margin-bottom: 10px;
-            font-size: 2.5rem;
+            margin-bottom: 5px;
+            font-size: 2rem;
             text-transform: uppercase;
         }
 
         .joyas-divider {
-            width: 80px;
-            height: 4px;
+            width: 60px;
+            height: 3px;
             background: #9b30ff;
-            margin: 0 auto 60px;
+            margin: 0 auto 40px;
             border-radius: 2px;
         }
 
@@ -146,110 +141,97 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 40px;
+            gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .card {
             background: #161b29;
-            border-radius: 25px;
-            width: 380px;
+            border-radius: 20px;
+            width: 340px; /* Un pelín más compactas */
             overflow: hidden;
             text-align: left;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 45px rgba(155, 48, 255, 0.2);
+            transform: translateY(-8px);
         }
 
         .card-header {
-            padding: 50px;
+            padding: 30px;
             text-align: center;
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .badge {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: #00ff88;
             color: #0b0e18;
-            padding: 5px 15px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: bold;
-            letter-spacing: 1px;
         }
 
         .card-icon {
-            font-size: 100px;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
+            font-size: 70px;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
         }
 
         .card-body {
-            padding: 30px;
+            padding: 25px;
         }
 
         .card-body h3 {
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: bold;
         }
 
         .card-body p {
             color: #b0b0b0;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin: 20px 0 30px;
-            height: 70px; /* Alineación de textos */
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 15px 0 20px;
+            height: 60px;
         }
 
         .btn-card {
             display: block;
             color: white;
             text-decoration: none;
-            padding: 18px;
+            padding: 15px;
             text-align: center;
-            border-radius: 12px;
+            border-radius: 10px;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
             transition: opacity 0.3s;
-        }
-
-        .btn-card:hover {
-            opacity: 0.9;
         }
 
         /* Footer */
         footer {
-            padding: 40px;
+            padding: 30px;
             text-align: center;
             border-top: 1px solid #1a1f35;
             color: #666;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
-        /* Media Queries */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 3rem; }
-            nav { padding: 20px; }
-            .nav-links { display: none; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero { height: 50vh; }
             .card { width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navegación -->
     <nav>
         <div class="logo">
             <span style="color: #9b30ff;">🎮</span> AITOR GAMES
@@ -261,41 +243,37 @@
         <a href="#" class="btn-unirse">Unirse</a>
     </nav>
 
-    <!-- Sección Hero -->
     <section class="hero">
         <h1>AITOR <span>GAMES</span> LAB</h1>
         <p>El portal oficial de <b>Studio Siche Miche</b>. Disfrutá de la mejor experiencia arcade desde tu navegador.</p>
         <a href="#joyas" class="btn-main">JUGAR AHORA</a>
     </section>
 
-    <!-- Sección NUESTRAS JOYAS -->
     <section id="joyas">
         <h2 class="joyas-title">NUESTRAS JOYAS</h2>
         <div class="joyas-divider"></div>
 
         <div class="grid-juegos">
             
-            <!-- TARJETA MR CUPCAKE -->
             <div class="card">
                 <div class="card-header" style="background: linear-gradient(135deg, #3a1c5e, #161b29);">
                     <span class="badge">JUGABLE</span>
                     <span class="card-icon">🧁</span>
                 </div>
                 <div class="card-body">
-                    <h3>MR CUPCAKE <span style="color: #ff4d94; font-size: 1rem; font-weight: normal;">ADVENTURE</span></h3>
+                    <h3>MR CUPCAKE <span style="color: #ff4d94; font-size: 0.9rem; font-weight: normal;">ADVENTURE</span></h3>
                     <p>El shooter de plataformas más dulce y frenético. 10 niveles de pura acción eléctrica en la cocina.</p>
                     <a href="mr_cupcake.html" class="btn-card" style="background: #e91e63;">ENTRAR AL COMBATE</a>
                 </div>
             </div>
 
-            <!-- TARJETA HAMBURGUESA CHALLENGE -->
             <div class="card">
                 <div class="card-header" style="background: linear-gradient(135deg, #5e4a1c, #161b29);">
                     <span class="badge">JUGABLE</span>
                     <span class="card-icon">🍔</span>
                 </div>
                 <div class="card-body">
-                    <h3>HAMBURGER <span style="color: #f1c40f; font-size: 1rem; font-weight: normal;">CHALLENGE</span></h3>
+                    <h3>HAMBURGER <span style="color: #f1c40f; font-size: 0.9rem; font-weight: normal;">CHALLENGE</span></h3>
                     <p>Un desafío de exploración 3D en el bosque. Encontrá los ingredientes y escapá del Chef antes que se acabe el tiempo.</p>
                     <a href="hamburguesa_challenge.html" class="btn-card" style="background: #9b30ff;">ENTRAR AL DESAFÍO</a>
                 </div>
@@ -304,9 +282,8 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
-        <p>&copy; 2025 Studio Siche Miche. Desarrollado por Aitor Games Lab.</p>
+        <p>&copy; 2026 Studio Siche Miche. Desarrollado por Aitor Games Lab.</p>
     </footer>
 
 </body>
