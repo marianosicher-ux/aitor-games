@@ -236,6 +236,45 @@
             opacity: 0.8;
         }
 
+        /* --- NUEVOS ESTILOS PARA EL VISOR DE JUEGOS --- */
+        #game-viewer {
+            display: none;
+            flex-direction: column;
+            height: calc(100vh - 70px); /* Restamos la altura de la barra de nav */
+            width: 100%;
+            background: #000;
+        }
+
+        .viewer-header {
+            background: #161b29;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #9b30ff;
+        }
+
+        .btn-volver {
+            background: #e91e63;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-volver:hover {
+            background: #ff4d94;
+        }
+
+        #game-iframe {
+            width: 100%;
+            flex-grow: 1;
+            border: none;
+        }
+
         /* Footer */
         footer {
             padding: 30px;
@@ -259,16 +298,16 @@
             <span style="color: #9b30ff;">🎮</span> AITOR GAMES
         </div>
         <div class="nav-links">
-            <a href="#">Inicio</a>
-            <a href="#joyas">Juegos</a>
+            <a href="#" id="link-inicio">Inicio</a>
+            <a href="#joyas" id="link-juegos">Juegos</a>
         </div>
         <a href="#" class="btn-unirse">Unirse</a>
     </nav>
 
-    <section class="hero">
-        <h1>AITOR <span>GAMES</span> LAB</h1>
-        <p>El portal oficial de <b>Studio Siche Miche</b>. Disfrutá de la mejor experiencia arcade desde tu navegador.</p>
-        <a href="#joyas" class="btn-main">JUGAR AHORA</a>
+    <!-- Envolvemos el contenido principal en un div para poder ocultarlo fácil -->
+    <div id="main-content">
+        <section class="hero">
+            <h1>AITOR <span>GAMES</span> LAB</h1>
     </section>
 
     <section id="joyas">
@@ -286,7 +325,7 @@
                 <div class="card-body">
                     <h3>JARDINERA AL <span style="color: #4caf50; font-size: 0.9rem; font-weight: normal;">RESCATE</span></h3>
                     <p>Un shoot 'em up estilo retro rubber hose. ¡Defendé tu jardín y derrotá al General Escarabajo!</p>
-                    <a href="jardinera_rescate.html" class="btn-card" style="background: #27ae60;">ENTRAR AL JARDÍN</a>
+                    <a href="jardinera_rescate.html" class="btn-card play-btn" style="background: #27ae60;" data-title="Jardinera al Rescate">ENTRAR AL JARDÍN</a>
                 </div>
             </div>
 
@@ -299,7 +338,7 @@
                 <div class="card-body">
                     <h3>MR CUPCAKE <span style="color: #ff4d94; font-size: 0.9rem; font-weight: normal;">ADVENTURE</span></h3>
                     <p>El shooter de plataformas más dulce y frenético. 10 niveles de pura acción eléctrica en la cocina.</p>
-                    <a href="mr_cupcake.html" class="btn-card" style="background: #e91e63;">ENTRAR AL COMBATE</a>
+                    <a href="mr_cupcake.html" class="btn-card play-btn" style="background: #e91e63;" data-title="Mr. Cupcake Adventure">ENTRAR AL COMBATE</a>
                 </div>
             </div>
 
@@ -312,16 +351,70 @@
                 <div class="card-body">
                     <h3>HAMBURGER <span style="color: #f1c40f; font-size: 0.9rem; font-weight: normal;">CHALLENGE</span></h3>
                     <p>Un desafío de exploración 3D en el bosque. Encontrá los ingredientes y escapá del Chef.</p>
-                    <a href="hamburguesa_challenge.html" class="btn-card" style="background: #9b30ff;">ENTRAR AL DESAFÍO</a>
+                    <a href="hamburguesa_challenge.html" class="btn-card play-btn" style="background: #9b30ff;" data-title="Hamburger Challenge">ENTRAR AL DESAFÍO</a>
                 </div>
             </div>
 
         </div>
     </section>
+    </div> <!-- Fin de main-content -->
+
+    <!-- CONTENEDOR DEL JUEGO (Oculto por defecto) -->
+    <div id="game-viewer">
+        <div class="viewer-header">
+            <span id="game-title-display" style="font-weight: bold; font-style: italic; color: #00ff88;">Cargando...</span>
+            <button class="btn-volver" id="btn-cerrar-juego">⬅ Volver al Menú</button>
+        </div>
+        <iframe id="game-iframe" src=""></iframe>
+    </div>
 
     <footer>
         <p>&copy; 2026 Studio Siche Miche. Desarrollado por Aitor Games Lab.</p>
     </footer>
 
+    <script>
+        // Lógica para el enmascarado del juego
+        const playButtons = document.querySelectorAll('.play-btn');
+        const mainContent = document.getElementById('main-content');
+        const gameViewer = document.getElementById('game-viewer');
+        const gameIframe = document.getElementById('game-iframe');
+        const btnCerrar = document.getElementById('btn-cerrar-juego');
+        const gameTitleDisplay = document.getElementById('game-title-display');
+        const linkInicio = document.getElementById('link-inicio');
+        const linkJuegos = document.getElementById('link-juegos');
+
+        // Abrir juego
+        playButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault(); // Evita que se vaya de la página
+                const gameUrl = this.getAttribute('href');
+                const gameTitle = this.getAttribute('data-title');
+                
+                gameTitleDisplay.textContent = "Jugando ahora: " + gameTitle;
+                gameIframe.src = gameUrl; // Carga el HTML del juego adentro del iframe
+                
+                mainContent.style.display = 'none'; // Oculta todo el catálogo
+                gameViewer.style.display = 'flex'; // Muestra la pantalla del juego
+                
+                window.scrollTo(0, 0); // Te manda arriba de todo
+            });
+        });
+
+        // Función para cerrar el juego
+        function cerrarJuego(e) {
+            if(e) e.preventDefault();
+            gameIframe.src = ""; // Limpia la memoria del juego
+            gameViewer.style.display = 'none';
+            mainContent.style.display = 'block';
+        }
+
+        // Si tocás "Volver al Menú" o cualquier botón de la navbar, se cierra el juego
+        btnCerrar.addEventListener('click', cerrarJuego);
+        linkInicio.addEventListener('click', cerrarJuego);
+        linkJuegos.addEventListener('click', function(e) {
+            cerrarJuego(e);
+            window.location.hash = "#joyas"; // Te baja hasta los juegos
+        });
+    </script>
 </body>
 </html>
