@@ -193,7 +193,7 @@
         }
 
         .badge-nuevo {
-            background: #ffeb3b; /* Amarillo para destacar el nuevo juego */
+            background: #ffeb3b;
         }
 
         .card-icon {
@@ -236,11 +236,11 @@
             opacity: 0.8;
         }
 
-        /* --- NUEVOS ESTILOS PARA EL VISOR DE JUEGOS --- */
+        /* --- ESTILOS PARA EL VISOR DE JUEGOS --- */
         #game-viewer {
             display: none;
             flex-direction: column;
-            height: calc(100vh - 70px); /* Restamos la altura de la barra de nav */
+            height: calc(100vh - 70px); 
             width: 100%;
             background: #000;
         }
@@ -308,55 +308,62 @@
     <div id="main-content">
         <section class="hero">
             <h1>AITOR <span>GAMES</span> LAB</h1>
-    </section>
+            <p>El portal oficial de <b>Studio Siche Miche</b>. Disfrutá de la mejor experiencia arcade desde tu navegador.</p>
+            <a href="#joyas" class="btn-main">JUGAR AHORA</a>
+        </section>
 
-    <section id="joyas">
-        <h2 class="joyas-title">NUESTRAS JOYAS</h2>
-        <div class="joyas-divider"></div>
+        <section id="joyas">
+            <h2 class="joyas-title">NUESTRAS JOYAS</h2>
+            <div class="joyas-divider"></div>
 
-        <div class="grid-juegos">
-            
-            <!-- TARJETA NUEVO JUEGO: Jardinera al Rescate -->
-            <div class="card">
-                <div class="card-header" style="background: linear-gradient(135deg, #1b5e20, #161b29);">
-                    <span class="badge badge-nuevo">NUEVO</span>
-                    <span class="card-icon">🌻</span>
+            <div class="grid-juegos">
+                
+                <!-- TARJETA NUEVO JUEGO: Jardinera al Rescate -->
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #1b5e20, #161b29);">
+                        <span class="badge badge-nuevo">NUEVO</span>
+                        <span class="card-icon">🌻</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>JARDINERA AL <span style="color: #4caf50; font-size: 0.9rem; font-weight: normal;">RESCATE</span></h3>
+                        <p>Un shoot 'em up estilo retro rubber hose. ¡Defendé tu jardín y derrotá al General Escarabajo!</p>
+                        <!-- Fijate que acá el JS usa .play-btn para frenar el link -->
+                        <a href="jardinera_rescate.html" class="btn-card play-btn" style="background: #27ae60;" data-title="Jardinera al Rescate">ENTRAR AL JARDÍN</a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h3>JARDINERA AL <span style="color: #4caf50; font-size: 0.9rem; font-weight: normal;">RESCATE</span></h3>
-                    <p>Un shoot 'em up estilo retro rubber hose. ¡Defendé tu jardín y derrotá al General Escarabajo!</p>
-                    <a href="jardinera_rescate.html" class="btn-card play-btn" style="background: #27ae60;" data-title="Jardinera al Rescate">ENTRAR AL JARDÍN</a>
+
+                <!-- TARJETA: Mr Cupcake -->
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #3a1c5e, #161b29);">
+                        <span class="badge">JUGABLE</span>
+                        <span class="card-icon">🧁</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>MR CUPCAKE <span style="color: #ff4d94; font-size: 0.9rem; font-weight: normal;">ADVENTURE</span></h3>
+                        <p>El shooter de plataformas más dulce y frenético. 10 niveles de pura acción eléctrica en la cocina.</p>
+                        <a href="mr_cupcake.html" class="btn-card play-btn" style="background: #e91e63;" data-title="Mr. Cupcake Adventure">ENTRAR AL COMBATE</a>
+                    </div>
                 </div>
+
+                <!-- TARJETA: Hamburger Challenge -->
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #5e4a1c, #161b29);">
+                        <span class="badge">JUGABLE</span>
+                        <span class="card-icon">🍔</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>HAMBURGER <span style="color: #f1c40f; font-size: 0.9rem; font-weight: normal;">CHALLENGE</span></h3>
+                        <p>Un desafío de exploración 3D en el bosque. Encontrá los ingredientes y escapá del Chef.</p>
+                        <a href="hamburguesa_challenge.html" class="btn-card play-btn" style="background: #9b30ff;" data-title="Hamburger Challenge">ENTRAR AL DESAFÍO</a>
+                    </div>
+                </div>
+
             </div>
-
-            <!-- TARJETA: Mr Cupcake -->
-            <div class="card">
-                <div class="card-header" style="background: linear-gradient(135deg, #3a1c5e, #161b29);">
-                    <span class="badge">JUGABLE</span>
-                    <span class="card-icon">🧁</span>
-                </div>
-                <div class="card-body">
-                    <h3>MR CUPCAKE <span style="color: #ff4d94; font-size: 0.9rem; font-weight: normal;">ADVENTURE</span></h3>
-                    <p>El shooter de plataformas más dulce y frenético. 10 niveles de pura acción eléctrica en la cocina.</p>
-                    <a href="mr_cupcake.html" class="btn-card play-btn" style="background: #e91e63;" data-title="Mr. Cupcake Adventure">ENTRAR AL COMBATE</a>
-                </div>
-            </div>
-
-            <!-- TARJETA: Hamburger Challenge -->
-            <div class="card">
-                <div class="card-header" style="background: linear-gradient(135deg, #5e4a1c, #161b29);">
-                    <span class="badge">JUGABLE</span>
-                    <span class="card-icon">🍔</span>
-                </div>
-                <div class="card-body">
-                    <h3>HAMBURGER <span style="color: #f1c40f; font-size: 0.9rem; font-weight: normal;">CHALLENGE</span></h3>
-                    <p>Un desafío de exploración 3D en el bosque. Encontrá los ingredientes y escapá del Chef.</p>
-                    <a href="hamburguesa_challenge.html" class="btn-card play-btn" style="background: #9b30ff;" data-title="Hamburger Challenge">ENTRAR AL DESAFÍO</a>
-                </div>
-            </div>
-
-        </div>
-    </section>
+        </section>
+        
+        <footer>
+            <p>&copy; 2026 Studio Siche Miche. Desarrollado por Aitor Games Lab.</p>
+        </footer>
     </div> <!-- Fin de main-content -->
 
     <!-- CONTENEDOR DEL JUEGO (Oculto por defecto) -->
@@ -365,55 +372,55 @@
             <span id="game-title-display" style="font-weight: bold; font-style: italic; color: #00ff88;">Cargando...</span>
             <button class="btn-volver" id="btn-cerrar-juego">⬅ Volver al Menú</button>
         </div>
+        <!-- Acá es donde se carga el juego enmascarado -->
         <iframe id="game-iframe" src=""></iframe>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Studio Siche Miche. Desarrollado por Aitor Games Lab.</p>
-    </footer>
-
     <script>
-        // Lógica para el enmascarado del juego
-        const playButtons = document.querySelectorAll('.play-btn');
-        const mainContent = document.getElementById('main-content');
-        const gameViewer = document.getElementById('game-viewer');
-        const gameIframe = document.getElementById('game-iframe');
-        const btnCerrar = document.getElementById('btn-cerrar-juego');
-        const gameTitleDisplay = document.getElementById('game-title-display');
-        const linkInicio = document.getElementById('link-inicio');
-        const linkJuegos = document.getElementById('link-juegos');
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lógica para el enmascarado del juego
+            const playButtons = document.querySelectorAll('.play-btn');
+            const mainContent = document.getElementById('main-content');
+            const gameViewer = document.getElementById('game-viewer');
+            const gameIframe = document.getElementById('game-iframe');
+            const btnCerrar = document.getElementById('btn-cerrar-juego');
+            const gameTitleDisplay = document.getElementById('game-title-display');
+            const linkInicio = document.getElementById('link-inicio');
+            const linkJuegos = document.getElementById('link-juegos');
 
-        // Abrir juego
-        playButtons.forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault(); // Evita que se vaya de la página
-                const gameUrl = this.getAttribute('href');
-                const gameTitle = this.getAttribute('data-title');
-                
-                gameTitleDisplay.textContent = "Jugando ahora: " + gameTitle;
-                gameIframe.src = gameUrl; // Carga el HTML del juego adentro del iframe
-                
-                mainContent.style.display = 'none'; // Oculta todo el catálogo
-                gameViewer.style.display = 'flex'; // Muestra la pantalla del juego
-                
-                window.scrollTo(0, 0); // Te manda arriba de todo
+            // Abrir juego
+            playButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    // preventDefault frena el comportamiento natural del <a>, evitando que te vayas del index.html
+                    e.preventDefault(); 
+                    const gameUrl = this.getAttribute('href');
+                    const gameTitle = this.getAttribute('data-title');
+                    
+                    gameTitleDisplay.textContent = "Jugando ahora: " + gameTitle;
+                    gameIframe.src = gameUrl; 
+                    
+                    mainContent.style.display = 'none'; 
+                    gameViewer.style.display = 'flex'; 
+                    
+                    window.scrollTo(0, 0); 
+                });
             });
-        });
 
-        // Función para cerrar el juego
-        function cerrarJuego(e) {
-            if(e) e.preventDefault();
-            gameIframe.src = ""; // Limpia la memoria del juego
-            gameViewer.style.display = 'none';
-            mainContent.style.display = 'block';
-        }
+            // Función para cerrar el juego
+            function cerrarJuego(e) {
+                if(e) e.preventDefault();
+                gameIframe.src = ""; // Limpia el iframe para que no siga sonando/corriendo el juego de fondo
+                gameViewer.style.display = 'none';
+                mainContent.style.display = 'block';
+            }
 
-        // Si tocás "Volver al Menú" o cualquier botón de la navbar, se cierra el juego
-        btnCerrar.addEventListener('click', cerrarJuego);
-        linkInicio.addEventListener('click', cerrarJuego);
-        linkJuegos.addEventListener('click', function(e) {
-            cerrarJuego(e);
-            window.location.hash = "#joyas"; // Te baja hasta los juegos
+            // Bindear botones de cierre
+            btnCerrar.addEventListener('click', cerrarJuego);
+            linkInicio.addEventListener('click', cerrarJuego);
+            linkJuegos.addEventListener('click', function(e) {
+                cerrarJuego(e);
+                window.location.hash = "#joyas"; 
+            });
         });
     </script>
 </body>
