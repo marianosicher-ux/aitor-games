@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jardinera al Rescate: Rubber Hose Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+        :root {
+            --vintage-sepia: #f4ecd8;
+            --ink-black: #1a1a1a;
+            --cuphead-red: #d32f2f;
+            --porkrind-brown: #4a3728;
+            --gold-coin: #facc15;
+            --super-cyan: #26c6da;
+        }
+
+        body {
+            margin: 0;
+            background-color: #0a0a0a;
+            color: var(--ink-black);
+            font-family: 'Bangers', cursive;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #viewport {
+            position: relative;
+            border: 15px solid #2e1a05;
+            box-shadow: 0 0 100px rgba(0,0,0,0.8);
+            background: #111;
+            line-height: 0;
+            overflow: hidden;
+        }
+
+        #viewport::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1kxt_60fps_8bit_noise.png');
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 1000;
+            animation: grain 0.2s steps(2) infinite;
+        }
+
+        #viewport::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.4) 100%);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        @keyframes grain {
+            0% { transform: translate(0,0); }
+            50% { transform: translate(-1%, -2%); }
+            100% { transform: translate(1%, 1%); }
+        }
+
+        canvas {
+            display: block;
+            background-color: #3b5a27;
+            image-rendering: pixelated;
+            transition: filter 0.3s;
+        }
+
+        .paused canvas {
+            filter: blur(5px) grayscale(0.5);
+        }
+
+        .ui-vintage {
+            position: absolute;
+            padding: 25px;
+            pointer-events: none;
+            z-index: 100;
+            color: var(--vintage-sepia);
+            text-shadow: 4px 4px 0px #000;
+            font-size: 28px;
+            letter-spacing: 2px;
+            width: 100%;
+        }
+
+        #hp-card {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--vintage-sepia);
+            border: 6px solid #000;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: rotate(-2deg);
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.5);
+            z-index: 150;
+        }
+
+        #hp-number {
+            color: var(--cuphead-red);
+            font-size: 48px;
+            text-shadow: 3px 3px 0 #000;
+            line-height: 1;
+        }
+
+        #coin-counter-center {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 110;
+            text-align: center;
+            color: var(--gold-coin);
+            font-size: 48px;
+            text-shadow: 4px 4px 0px #000;
+            pointer-events: none;
+        }
+
+        #shop-modal, #pause-modal {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 500;
+        }
+
+        .shop-frame {
+            background: var(--porkrind-brown);
+            border: 10px solid #2e1a05;
+            width: 90%; height: 90%;
+            margin: 2.5% auto;
+            display: flex;
+            position: relative;
+        }
+
+        .item-card {
+            background: var(--vintage-sepia);
+            border: 5px solid #000;
+            margin-bottom: 15px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .item-card:hover:not(.sold-out) {
+            transform: scale(1.02);
+            background: #fff;
+        }
+
+        .item-card.sold-out {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+
+        .item-card.super-item {
+            border-color: var(--super-cyan);
+            background: #e0f7fa;
+        }
+
+        .btn-cartoon {
+            background: var(--cuphead-red);
+            color: white;
+            border: 5px solid #000;
+            padding: 10px 30px;
+            font-size: 32px;
+            cursor: pointer;
+            box-shadow: 5px 5px 0 #000;
+            font-family: 'Bangers';
+            transition: transform 0.1s;
+        }
+
+        .btn-cartoon:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        #boss-ui {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            z-index: 200;
+            display: none;
+            text-align: center;
+        }
+
+        .boss-hp-container {
+            height: 25px;
+            background: #1a1a1a;
+            border: 4px solid var(--vintage-sepia);
+            overflow: hidden;
+        }
+
+        #boss-hp-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to right, #8b0000, #d32f2f);
+            transition: width 0.2s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="viewport">
+        <!-- Interfaz de Vida -->
+        <div id="hp-card">
+            <div style="font-size: 40px;">❤️</div>
+            <div class="flex flex-col">
+                <span style="color: #000; font-size: 20px;">VIGOR HP</span>
+                <span id="hp-number">3</span>
+            </div>
+        </div>
+
+        <!-- Contador de Insectos -->
+        <div id="top-ui" class="ui-vintage flex justify-end">
+            <div>INSECTOS: <span id="score-text">0</span>/14</div>
+        </div>
+        
+        <!-- Monedas -->
+        <div id="coin-counter-center">
+            $<span id="coins-text">0</span>
+        </div>
+
+        <!-- Barra del Jefe -->
+        <div id="boss-ui">
+            <div class="text-white text-2xl mb-1 uppercase">¡El General Escarabajo!</div>
+            <div class="boss-hp-container">
+                <div id="boss-hp-fill"></div>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Menú de Inicio y Dificultad -->
+        <div id="start-modal" class="absolute inset-0 z-[600] flex items-center justify-center">
+            <div class="bg-[#f4ecd8] border-[10px] border-black p-12 text-center shadow-[20px_20px_0_#000]">
+                <h1 class="text-8xl text-[#d32f2f] mb-4">¡AL RESCATE!</h1>
+                <p class="text-3xl mb-4 italic">Elige tu destino, jardinera...</p>
+                
+                <div class="flex gap-6 justify-center mb-8">
+                    <button class="btn-cartoon !bg-green-600" onclick="initGame('easy')">FÁCIL</button>
+                    <button class="btn-cartoon" onclick="initGame('normal')">NORMAL</button>
+                </div>
+
+                <div class="text-sm text-gray-700 space-y-1">
+                    <p>Mover: Flechas/WASD | Disparar: E/Espacio | Tienda: T | Pausa: ESC</p>
+                    <p class="font-bold uppercase text-xs">Fácil: Insectos de 1 en 1, Jefe no dispara, Tienda barata.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú de Pausa -->
+        <div id="pause-modal" class="flex items-center justify-center">
+            <div class="bg-[#f4ecd8] border-[10px] border-black p-12 text-center shadow-[20px_20px_0_#000] rotate-2">
+                <h2 class="text-7xl text-black mb-6">¡PAUSA!</h2>
+                <button class="btn-cartoon" onclick="togglePause()">CONTINUAR</button>
+            </div>
+        </div>
+
+        <!-- Tienda de Porkrind -->
+        <div id="shop-modal">
+            <div class="shop-frame">
+                <div class="w-1/3 bg-[#5d4037] border-r-4 border-black flex flex-col items-center justify-center p-6 text-center text-white">
+                    <div class="text-8xl mb-4">🐗</div>
+                    <h2 class="text-4xl font-bold">PORKRIND</h2>
+                    <p class="italic">"¿Uno por uno? ¡Necesitarás más potencia!"</p>
+                </div>
+                <div class="w-2/3 p-8 overflow-y-auto">
+                    <div class="text-4xl mb-4 text-yellow-500 uppercase">TUS MONEDAS: $<span id="shop-coins">0</span></div>
+                    
+                    <div class="item-card" onclick="buyItem('hp', prices.hp)">
+                        <div class="text-4xl mr-6">💖</div>
+                        <div class="flex-1">
+                            <div class="text-xl uppercase">Vigor Extra</div>
+                            <div>Recupera salud</div>
+                        </div>
+                        <div class="text-2xl">$<span id="price-hp">0</span></div>
+                    </div>
+
+                    <div id="item-triple" class="item-card" onclick="buyItem('triple', prices.triple)">
+                        <div class="text-4xl mr-6">🔱</div>
+                        <div class="flex-1">
+                            <div class="text-xl uppercase">Disparo Triple</div>
+                            <div>Tres ráfagas</div>
+                        </div>
+                        <div class="text-2xl">$<span id="price-triple">0</span></div>
+                    </div>
+
+                    <div id="item-mega" class="item-card" onclick="buyItem('mega', prices.mega)">
+                        <div class="text-4xl mr-6">💣</div>
+                        <div class="flex-1">
+                            <div class="text-xl uppercase">Bomba Jardín</div>
+                            <div>Disparos Gigantes</div>
+                        </div>
+                        <div class="text-2xl">$<span id="price-mega">0</span></div>
+                    </div>
+
+                    <div id="item-super" class="item-card super-item" onclick="buyItem('super', prices.super)">
+                        <div class="text-4xl mr-6">🌀</div>
+                        <div class="flex-1">
+                            <div class="text-xl uppercase font-bold text-cyan-700">SUPER DISPARO</div>
+                            <div>¡Ocho en círculo!</div>
+                        </div>
+                        <div class="text-3xl font-bold text-cyan-700">$<span id="price-super">0</span></div>
+                    </div>
+
+                    <button class="btn-cartoon w-full mt-2" onclick="closeShop()">VOLVER</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over -->
+        <div id="game-over" class="hidden absolute inset-0 z-[700] bg-black flex flex-col items-center justify-center text-white">
+            <h1 id="over-title" class="text-9xl mb-8 italic">¡ADIÓS!</h1>
+            <button class="btn-cartoon" onclick="location.reload()">REINTENTAR</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const WIDTH = 900, HEIGHT = 600;
+        canvas.width = WIDTH; canvas.height = HEIGHT;
+
+        let state = 'start';
+        let difficulty = 'normal';
+        let score = 0, coins = 0, health = 3;
+        let shake = 0, frame = 0, invul = 0;
+        const keys = {};
+        const BOSS_TRIGGER = 14;
+
+        const player = {
+            x: WIDTH/2, y: HEIGHT/2,
+            speed: 6, size: 45,
+            dirX: 0, dirY: -1
+        };
+
+        let entities = {
+            bullets: [],
+            enemies: [],
+            particles: [],
+            plants: [],
+            boss: null,
+            bossBullets: []
+        };
+
+        const upgrades = { mega: false, triple: false, super: false };
+        let prices = { hp: 20, triple: 40, mega: 60, super: 100 };
+
+        function initPlants() {
+            entities.plants = [];
+            const plantPositions = [
+                {x: 120, y: 120}, {x: WIDTH-120, y: 120},
+                {x: 120, y: HEIGHT-120}, {x: WIDTH-120, y: HEIGHT-120},
+                {x: WIDTH/2, y: 80}, {x: WIDTH/2, y: HEIGHT-80},
+                {x: 80, y: HEIGHT/2}, {x: WIDTH-80, y: HEIGHT/2}
+            ];
+            plantPositions.forEach(pos => {
+                entities.plants.push({ x: pos.x, y: pos.y, size: 40, type: Math.floor(Math.random() * 3) });
+            });
+        }
+
+        window.addEventListener('keydown', e => {
+            if(e.code === 'Escape' && (state === 'play' || state === 'pause')) {
+                togglePause();
+                return;
+            }
+            keys[e.code] = true;
+            if(e.code === 'KeyT' && state === 'play') openShop();
+            if((e.code === 'KeyE' || e.code === 'Space') && state === 'play') fire();
+        });
+        window.addEventListener('keyup', e => keys[e.code] = false);
+
+        function togglePause() {
+            if(state === 'play') {
+                state = 'pause';
+                document.getElementById('pause-modal').style.display = 'flex';
+                document.getElementById('viewport').classList.add('paused');
+            } else if(state === 'pause') {
+                state = 'play';
+                document.getElementById('pause-modal').style.display = 'none';
+                document.getElementById('viewport').classList.remove('paused');
+            }
+        }
+
+        function openShop() { 
+            state = 'shop'; 
+            document.getElementById('shop-modal').style.display = 'block'; 
+            document.getElementById('shop-coins').innerText = coins; 
+            // Actualizar textos de precios en el DOM
+            document.getElementById('price-hp').innerText = prices.hp;
+            document.getElementById('price-triple').innerText = prices.triple;
+            document.getElementById('price-mega').innerText = prices.mega;
+            document.getElementById('price-super').innerText = prices.super;
+        }
+
+        function closeShop() { state = 'play'; document.getElementById('shop-modal').style.display = 'none'; }
+
+        function buyItem(type, price) {
+            if(coins < price) return;
+            
+            if(type === 'hp') {
+                coins -= price;
+                health++;
+            } else if(type === 'triple' && !upgrades.triple) {
+                coins -= price;
+                upgrades.triple = true;
+                document.getElementById('item-triple').classList.add('sold-out');
+            } else if(type === 'mega' && !upgrades.mega) {
+                coins -= price;
+                upgrades.mega = true;
+                document.getElementById('item-mega').classList.add('sold-out');
+            } else if(type === 'super' && !upgrades.super) {
+                coins -= price;
+                upgrades.super = true;
+                document.getElementById('item-super').classList.add('sold-out');
+            }
+            
+            updateUI();
+            document.getElementById('shop-coins').innerText = coins;
+        }
+
+        function createBullet(angle) {
+            return {
+                x: player.x, y: player.y,
+                vx: Math.cos(angle) * 12, vy: Math.sin(angle) * 12,
+                size: upgrades.mega ? 40 : 15,
+                color: upgrades.super ? "#26c6da" : "#fff"
+            };
+        }
+
+        function fire() {
+            const angle = Math.atan2(player.dirY, player.dirX);
+            if(upgrades.super) {
+                for(let i = 0; i < 8; i++) entities.bullets.push(createBullet(i * (Math.PI / 4)));
+            } else if(upgrades.triple) {
+                entities.bullets.push(createBullet(angle));
+                entities.bullets.push(createBullet(angle - 0.25));
+                entities.bullets.push(createBullet(angle + 0.25));
+            } else {
+                entities.bullets.push(createBullet(angle));
+            }
+            shake = upgrades.super ? 5 : 2;
+        }
+
+        function spawnEnemy() {
+            if(entities.boss) return;
+            // Dificultad Fácil: Solo uno a la vez. Normal: Hasta 4.
+            const limit = (difficulty === 'easy') ? 1 : 4;
+            if(entities.enemies.length >= limit) return;
+            
+            const side = Math.floor(Math.random()*4);
+            let x, y;
+            if(side === 0) { x = Math.random()*WIDTH; y = -50; }
+            else if(side === 1) { x = WIDTH+50; y = Math.random()*HEIGHT; }
+            else if(side === 2) { x = Math.random()*WIDTH; y = HEIGHT+50; }
+            else { x = -50; y = Math.random()*HEIGHT; }
+            
+            entities.enemies.push({ x, y, speed: 2.2, size: 40, hp: 1 });
+        }
+
+        function spawnBoss() {
+            entities.boss = { 
+                x: WIDTH/2, y: HEIGHT + 200, 
+                hp: 550, maxHp: 550, 
+                timer: 0, state: 'intro', 
+                size: 140, attackTimer: 0, isAttacking: false
+            };
+            document.getElementById('boss-ui').style.display = 'block';
+            shake = 30;
+        }
+
+        function updateUI() {
+            document.getElementById('hp-number').innerText = health;
+            document.getElementById('score-text').innerText = score;
+            document.getElementById('coins-text').innerText = coins;
+            if(entities.boss) {
+                document.getElementById('boss-hp-fill').style.width = (entities.boss.hp / entities.boss.maxHp * 100) + "%";
+            }
+        }
+
+        function update() {
+            if(state !== 'play') return;
+            frame++;
+            if(shake > 0) shake *= 0.9;
+            if(invul > 0) invul--;
+
+            // Movimiento
+            let mx = 0, my = 0;
+            if(keys['ArrowUp'] || keys['KeyW']) my = -1;
+            if(keys['ArrowDown'] || keys['KeyS']) my = 1;
+            if(keys['ArrowLeft'] || keys['KeyA']) mx = -1;
+            if(keys['ArrowRight'] || keys['KeyD']) mx = 1;
+            if(mx !== 0 || my !== 0) { player.dirX = mx; player.dirY = my; }
+            player.x = Math.max(20, Math.min(WIDTH-20, player.x + mx * player.speed));
+            player.y = Math.max(20, Math.min(HEIGHT-20, player.y + my * player.speed));
+
+            // Jefe
+            if(entities.boss) {
+                const b = entities.boss;
+                if(b.state === 'intro') { 
+                    b.y -= 2; 
+                    if(b.y <= 150) b.state = 'fight'; 
+                } else {
+                    b.timer += 0.05;
+                    b.x = WIDTH/2 + Math.sin(b.timer)*250;
+                    
+                    // Solo ataca (dispara) en modo Normal
+                    if(difficulty === 'normal') {
+                        b.attackTimer++;
+                        if(b.attackTimer > 100) {
+                            b.isAttacking = true;
+                            if(b.attackTimer > 120) {
+                                const angle = Math.atan2(player.y - b.y, player.x - b.x);
+                                entities.bossBullets.push({
+                                    x: b.x, y: b.y,
+                                    vx: Math.cos(angle) * 7, vy: Math.sin(angle) * 7,
+                                    size: 30
+                                });
+                                b.attackTimer = 0;
+                                b.isAttacking = false;
+                            }
+                        }
+                    }
+
+                    if(invul <= 0 && Math.hypot(player.x - b.x, player.y - b.y) < 70) hitPlayer();
+                }
+            } else if (score < BOSS_TRIGGER) {
+                spawnEnemy();
+            }
+
+            // Balas Enemigas
+            entities.bossBullets.forEach((bb, i) => {
+                bb.x += bb.vx; bb.y += bb.vy;
+                if(invul <= 0 && Math.hypot(player.x - bb.x, player.y - bb.y) < (bb.size/2 + 15)) {
+                    entities.bossBullets.splice(i, 1);
+                    hitPlayer();
+                }
+                if(bb.x < -50 || bb.x > WIDTH+50 || bb.y < -50 || bb.y > HEIGHT+50) entities.bossBullets.splice(i, 1);
+            });
+
+            // Balas Jugador
+            entities.bullets.forEach((b, i) => {
+                b.x += b.vx; b.y += b.vy;
+                if(b.x < -100 || b.x > WIDTH+100 || b.y < -100 || b.y > HEIGHT+100) { entities.bullets.splice(i, 1); return; }
+
+                if(entities.boss && entities.boss.state === 'fight') {
+                    if(Math.hypot(b.x - entities.boss.x, b.y - entities.boss.y) < 60) {
+                        entities.boss.hp -= (upgrades.mega ? 12 : 5);
+                        entities.bullets.splice(i, 1);
+                        createParticles(b.x, b.y, "#ff0000", 5);
+                        if(entities.boss.hp <= 0) endGame(true);
+                        updateUI();
+                    }
+                }
+
+                entities.enemies.forEach((en, ei) => {
+                    if(Math.hypot(b.x - en.x, b.y - en.y) < 30) {
+                        entities.enemies.splice(ei, 1);
+                        entities.bullets.splice(i, 1);
+                        score++;
+                        coins += 15;
+                        updateUI();
+                        createParticles(en.x, en.y, "#000", 8);
+                        if(score >= BOSS_TRIGGER) spawnBoss();
+                    }
+                });
+            });
+
+            // Enemigos
+            entities.enemies.forEach((en, ei) => {
+                const angle = Math.atan2(player.y - en.y, player.x - en.x);
+                en.x += Math.cos(angle) * en.speed;
+                en.y += Math.sin(angle) * en.speed;
+                if(invul <= 0 && Math.hypot(player.x - en.x, player.y - en.y) < 35) {
+                    entities.enemies.splice(ei, 1);
+                    hitPlayer();
+                }
+            });
+
+            entities.particles.forEach((p, i) => { p.x += p.vx; p.y += p.vy; p.life--; if(p.life <= 0) entities.particles.splice(i, 1); });
+        }
+
+        function hitPlayer() { health--; invul = 80; shake = 20; updateUI(); if(health <= 0) endGame(false); }
+
+        function createParticles(x, y, color, count) {
+            for(let i=0; i<count; i++) entities.particles.push({ x, y, vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10, life: 20, color });
+        }
+
+        function draw() {
+            ctx.save();
+            if(shake > 0.5) ctx.translate(Math.random()*shake-shake/2, Math.random()*shake-shake/2);
+            ctx.fillStyle = (entities.boss && entities.boss.state === 'fight') ? "#4a2a1a" : "#3b5a27";
+            ctx.fillRect(0,0,WIDTH,HEIGHT);
+
+            entities.plants.forEach(p => {
+                ctx.fillStyle = "#8d6e63"; ctx.strokeStyle = "#000"; ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.moveTo(p.x-15, p.y); ctx.lineTo(p.x+15, p.y);
+                ctx.lineTo(p.x+10, p.y+20); ctx.lineTo(p.x-10, p.y+20); ctx.closePath(); ctx.fill(); ctx.stroke();
+                ctx.strokeStyle = "#2e7d32"; ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y-15); ctx.stroke();
+                const colors = ["#f06292", "#ffd54f", "#ba68c8"];
+                ctx.fillStyle = colors[p.type];
+                ctx.beginPath(); ctx.arc(p.x, p.y-20, 8, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+            });
+
+            if(entities.boss) {
+                const b = entities.boss;
+                ctx.fillStyle = b.isAttacking ? "#facc15" : (b.hp < 200 ? "#b71c1c" : "#311b92");
+                ctx.strokeStyle = "#000"; ctx.lineWidth = 10;
+                ctx.beginPath(); ctx.ellipse(b.x, b.y, b.size/2, b.size/2 + 10, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = "#fff"; 
+                ctx.beginPath(); ctx.arc(b.x-25, b.y-20, 20, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                ctx.beginPath(); ctx.arc(b.x+25, b.y-20, 20, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                const angle = Math.atan2(player.y - b.y, player.x - b.x);
+                ctx.fillStyle = "#000";
+                ctx.beginPath(); ctx.arc(b.x-25 + Math.cos(angle)*8, b.y-20 + Math.sin(angle)*8, 7, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(b.x+25 + Math.cos(angle)*8, b.y-20 + Math.sin(angle)*8, 7, 0, Math.PI*2); ctx.fill();
+            }
+
+            entities.bossBullets.forEach(bb => {
+                ctx.fillStyle = "#9c27b0"; ctx.strokeStyle = "#000"; ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.arc(bb.x, bb.y, bb.size/2, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = "#e1bee7"; ctx.beginPath(); ctx.arc(bb.x-5, bb.y-5, 5, 0, Math.PI*2); ctx.fill();
+            });
+
+            entities.enemies.forEach(en => {
+                ctx.fillStyle = "#1a1a1a"; ctx.strokeStyle = "#000"; ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.ellipse(en.x, en.y, 20, 15, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(en.x-8, en.y-5, 5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(en.x+8, en.y-5, 5, 0, Math.PI*2); ctx.fill();
+            });
+
+            if(invul % 8 < 4) {
+                ctx.fillStyle = upgrades.super ? "#00bcd4" : "#0d47a1"; ctx.strokeStyle = "#000"; ctx.lineWidth = 6;
+                ctx.beginPath(); ctx.roundRect(player.x-20, player.y-20, 40, 40, 8); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(player.x-8, player.y-8, 4, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(player.x+8, player.y-8, 4, 0, Math.PI*2); ctx.fill();
+            }
+
+            entities.bullets.forEach(b => {
+                ctx.fillStyle = b.color; ctx.strokeStyle = "#000"; ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.arc(b.x, b.y, b.size/2, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+            });
+
+            entities.particles.forEach(p => { 
+                ctx.globalAlpha = p.life/20; ctx.fillStyle = p.color; 
+                ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill(); 
+            });
+            ctx.restore();
+        }
+
+        function initGame(diff) { 
+            difficulty = diff;
+            if(difficulty === 'easy') {
+                prices = { hp: 10, triple: 20, mega: 30, super: 50 };
+            }
+            document.getElementById('start-modal').classList.add('hidden'); 
+            state = 'play'; 
+            initPlants();
+            updateUI(); 
+            requestAnimationFrame(gameLoop); 
+        }
+
+        function endGame(victory) {
+            state = 'over';
+            document.getElementById('game-over').classList.remove('hidden');
+            const title = document.getElementById('over-title');
+            title.innerText = victory ? "¡QUÉ VICTORIA!" : "¡ADIÓS!";
+            title.style.color = victory ? "#22c55e" : "#ef4444";
+        }
+
+        function gameLoop() { 
+            if(state !== 'pause') { update(); draw(); }
+            if(state !== 'over') requestAnimationFrame(gameLoop); 
+        }
+    </script>
+</body>
+</html>
