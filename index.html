@@ -4,7 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aitor Games Lab | Studio Siche Miche</title>
+    
+    <!-- SEO Básico -->
+    <meta name="description" content="Aitor Games Lab: El portal oficial de Studio Siche Miche. Jugá Mr. Cupcake y Hamburguesa Challenge gratis desde tu navegador.">
+    <meta name="keywords" content="juegos, arcade, indie, mr cupcake, hamburguesa challenge, jardinera al rescate, studio siche miche, aitor games">
+    <meta name="author" content="Aitor Games Lab">
+
+    <!-- Meta Tags para Redes Sociales (Open Graph) -->
+    <meta property="og:title" content="Aitor Games Lab | Studio Siche Miche">
+    <meta property="og:description" content="Desafíos arcade en 3D y 2D. ¡Entrá y jugá ahora!">
+    <meta property="og:image" content="https://aitorgames.com.ar/captura-del-juego.png">
+    <meta property="og:url" content="https://aitorgames.com.ar">
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    
     <style>
         /* Estilos Globales */
         body {
@@ -21,7 +34,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 50px; /* Reducido un poco */
+            padding: 15px 50px;
             background-color: rgba(11, 14, 24, 0.95);
             position: sticky;
             top: 0;
@@ -30,7 +43,7 @@
 
         .logo {
             font-weight: bold;
-            font-size: 1.3rem; /* Un toque más chico */
+            font-size: 1.3rem;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -66,7 +79,7 @@
 
         /* Sección Hero ACHICADA */
         .hero {
-            height: 45vh; /* Bajamos de 80vh a 45vh */
+            height: 45vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -77,7 +90,7 @@
         }
 
         .hero h1 {
-            font-size: 3.5rem; /* Achicamos la fuente un poco */
+            font-size: 3.5rem;
             font-style: italic;
             font-weight: 900;
             margin: 0;
@@ -118,7 +131,7 @@
 
         /* Sección JOYAS AJUSTADA */
         #joyas {
-            padding: 40px 20px; /* Reducido de 100px a 40px */
+            padding: 40px 20px;
             text-align: center;
         }
 
@@ -150,7 +163,7 @@
         .card {
             background: #161b29;
             border-radius: 20px;
-            width: 340px; /* Un pelín más compactas */
+            width: 340px;
             overflow: hidden;
             text-align: left;
             box-shadow: 0 10px 25px rgba(0,0,0,0.4);
@@ -177,6 +190,10 @@
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: bold;
+        }
+
+        .badge-nuevo {
+            background: #ffeb3b; /* Amarillo para destacar el nuevo juego */
         }
 
         .card-icon {
@@ -213,6 +230,10 @@
             font-size: 1rem;
             text-transform: uppercase;
             transition: opacity 0.3s;
+        }
+        
+        .btn-card:hover {
+            opacity: 0.8;
         }
 
         /* Footer */
@@ -256,6 +277,20 @@
 
         <div class="grid-juegos">
             
+            <!-- TARJETA NUEVO JUEGO: Jardinera al Rescate -->
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, #1b5e20, #161b29);">
+                    <span class="badge badge-nuevo">NUEVO</span>
+                    <span class="card-icon">🌻</span>
+                </div>
+                <div class="card-body">
+                    <h3>JARDINERA AL <span style="color: #4caf50; font-size: 0.9rem; font-weight: normal;">RESCATE</span></h3>
+                    <p>Un shoot 'em up estilo retro rubber hose. ¡Defendé tu jardín y derrotá al General Escarabajo!</p>
+                    <a href="jardinera_rescate.html" class="btn-card" style="background: #27ae60;">ENTRAR AL JARDÍN</a>
+                </div>
+            </div>
+
+            <!-- TARJETA: Mr Cupcake -->
             <div class="card">
                 <div class="card-header" style="background: linear-gradient(135deg, #3a1c5e, #161b29);">
                     <span class="badge">JUGABLE</span>
@@ -268,6 +303,7 @@
                 </div>
             </div>
 
+            <!-- TARJETA: Hamburger Challenge -->
             <div class="card">
                 <div class="card-header" style="background: linear-gradient(135deg, #5e4a1c, #161b29);">
                     <span class="badge">JUGABLE</span>
@@ -275,7 +311,7 @@
                 </div>
                 <div class="card-body">
                     <h3>HAMBURGER <span style="color: #f1c40f; font-size: 0.9rem; font-weight: normal;">CHALLENGE</span></h3>
-                    <p>Un desafío de exploración 3D en el bosque. Encontrá los ingredientes y escapá del Chef antes que se acabe el tiempo.</p>
+                    <p>Un desafío de exploración 3D en el bosque. Encontrá los ingredientes y escapá del Chef.</p>
                     <a href="hamburguesa_challenge.html" class="btn-card" style="background: #9b30ff;">ENTRAR AL DESAFÍO</a>
                 </div>
             </div>
@@ -286,18 +322,6 @@
     <footer>
         <p>&copy; 2026 Studio Siche Miche. Desarrollado por Aitor Games Lab.</p>
     </footer>
-
-    <!-- SEO Básico -->
-<meta name="description" content="Aitor Games Lab: El portal oficial de Studio Siche Miche. Jugá Mr. Cupcake y Hamburguesa Challenge gratis desde tu navegador.">
-<meta name="keywords" content="juegos, arcade, indie, mr cupcake, hamburguesa challenge, studio siche miche, aitor games">
-<meta name="author" content="Aitor Games Lab">
-
-<!-- Meta Tags para Redes Sociales (Open Graph) -->
-<meta property="og:title" content="Aitor Games Lab | Studio Siche Miche">
-<meta property="og:description" content="Desafíos arcade en 3D y 2D. ¡Entrá y jugá ahora!">
-<meta property="og:image" content="[https://aitorgames.com.ar/captura-del-juego.png](https://aitorgames.com.ar/captura-del-juego.png)">
-<meta property="og:url" content="[https://aitorgames.com.ar](https://aitorgames.com.ar)">
-
 
 </body>
 </html>
