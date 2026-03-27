@@ -194,6 +194,13 @@
 
         .badge-nuevo {
             background: #ffeb3b;
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+        
+        .badge-estreno {
+            background: #ff4d6d;
+            color: white;
+            box-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
         }
 
         .card-icon {
@@ -318,7 +325,20 @@
 
             <div class="grid-juegos">
                 
-                <!-- TARJETA NUEVO JUEGO: Jardinera al Rescate -->
+                <!-- TARJETA NUEVO JUEGO: Mr Cupcake 2 -->
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #1e3a8a, #881337);">
+                        <span class="badge badge-estreno">¡ESTRENO!</span>
+                        <span class="card-icon">🦸‍♂️🧁</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>MR CUPCAKE 2 <span style="color: #60a5fa; font-size: 0.9rem; font-weight: normal;">EL RETORNO</span></h3>
+                        <p>La épica secuela. ¡Elegí a tu héroe y derrotá al temible Budín Ancestral en 20 niveles!</p>
+                        <a href="mr_cupcake_2.html" class="btn-card play-btn" style="background: #e11d48;" data-title="Mr. Cupcake 2: El Retorno">JUGAR SECUELA</a>
+                    </div>
+                </div>
+
+                <!-- TARJETA: Jardinera al Rescate -->
                 <div class="card">
                     <div class="card-header" style="background: linear-gradient(135deg, #1b5e20, #161b29);">
                         <span class="badge badge-nuevo">NUEVO</span>
@@ -327,7 +347,6 @@
                     <div class="card-body">
                         <h3>JARDINERA AL <span style="color: #4caf50; font-size: 0.9rem; font-weight: normal;">RESCATE</span></h3>
                         <p>Un shoot 'em up estilo retro rubber hose. ¡Defendé tu jardín y derrotá al General Escarabajo!</p>
-                        <!-- Fijate que acá el JS usa .play-btn para frenar el link -->
                         <a href="jardinera_rescate.html" class="btn-card play-btn" style="background: #27ae60;" data-title="Jardinera al Rescate">ENTRAR AL JARDÍN</a>
                     </div>
                 </div>
