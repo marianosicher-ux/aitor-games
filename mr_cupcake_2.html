@@ -8,14 +8,11 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;700&display=swap');
         
-        body { font-family: 'Inter', sans-serif; background: #020617; color: white; margin: 0; overflow: hidden; width: 100%; height: 100%; }
+        body { font-family: 'Inter', sans-serif; background: #020617; color: white; margin: 0; overflow: hidden; }
         h1, h2, h3, .bungee { font-family: 'Bungee', cursive; }
 
-        #game-container { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        #game-container { position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
         canvas { 
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
             background: linear-gradient(to bottom, #0f172a, #1e3a8a, #3b82f6); 
             border: 4px solid rgba(255,255,255,0.8); 
             box-shadow: 0 0 100px rgba(59, 130, 246, 0.3);
@@ -30,6 +27,7 @@
             transition: all 0.1s; cursor: pointer; padding: 12px 30px; border-radius: 15px; 
             font-family: 'Bungee'; text-transform: uppercase; letter-spacing: 1px;
             text-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+            user-select: none;
         }
         .btn-candy:active { transform: translateY(4px); border-bottom-width: 2px; }
         .btn-candy:hover { filter: brightness(1.1); }
@@ -62,12 +60,11 @@
             background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px;
             display: flex; align-items: center; gap: 10px; border-left: 4px solid #475569;
         }
-        .achievement-card.earned { border-left-color: #fbbf24; background: rgba(251, 191, 36, 0.05); }
+        .achievement-card.earned { border-left-color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .floating { animation: float 3s ease-in-out infinite; }
 
-        /* Estilos para los Créditos */
         #credits-container {
             position: absolute;
             top: 100%;
@@ -75,41 +72,18 @@
             text-align: center;
             transition: top 25s linear;
         }
-        #credits-overlay.active #credits-container {
-            top: -1800px; 
-        }
+        #credits-overlay.active #credits-container { top: -1800px; }
 
-        /* Escena Post-créditos */
         #post-credits-scene {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 2s ease-in;
-            z-index: 30;
-            pointer-events: none;
+            width: 100%; height: 100%; background: #000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 2s ease-in; z-index: 30; pointer-events: none;
         }
-        #post-credits-scene.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        #post-credits-scene.active { opacity: 1; pointer-events: auto; }
 
-        .dark-villain {
-            filter: brightness(0) drop-shadow(0 0 15px #ff0000);
-            transform: scale(1.8);
-            margin-bottom: 2rem;
-        }
-
-        .glitch-text {
-            color: #ef4444;
-            text-shadow: 2px 0 #fff, -2px 0 #f0f;
-            animation: glitch 1s linear infinite;
-        }
+        .dark-villain { filter: brightness(0) drop-shadow(0 0 15px #ff0000); transform: scale(1.8); margin-bottom: 2rem; }
+        .glitch-text { color: #ef4444; text-shadow: 2px 0 #fff, -2px 0 #f0f; animation: glitch 1s linear infinite; }
 
         @keyframes glitch {
             0% { transform: translate(0); }
@@ -119,6 +93,9 @@
             80% { transform: translate(2px, -2px); }
             100% { transform: translate(0); }
         }
+
+        #win-banner { transform: scale(0); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #win-banner.active { transform: scale(1); }
     </style>
 </head>
 <body>
@@ -126,7 +103,7 @@
 <div id="game-container">
     <canvas id="gameCanvas"></canvas>
 
-    <!-- Achievement Toast -->
+    <!-- Notificación de Logro -->
     <div id="achievement-toast">
         <div class="text-3xl">🏆</div>
         <div>
@@ -150,7 +127,16 @@
         </div>
     </div>
 
-    <!-- Shop -->
+    <!-- Banner de Victoria -->
+    <div id="win-level-overlay" class="ui-overlay hidden bg-blue-900/40 backdrop-blur-md">
+        <div id="win-banner" class="glass-panel text-center border-yellow-400 border-4">
+            <h2 class="text-6xl bungee text-yellow-400 mb-4 drop-shadow-lg">¡VICTORIA!</h2>
+            <p class="bungee text-white text-xl mb-8">Nivel Completado</p>
+            <button onclick="closeWinBanner()" class="btn-candy">CONTINUAR</button>
+        </div>
+    </div>
+
+    <!-- Tienda -->
     <div id="shop-overlay" class="ui-overlay hidden bg-black/70 backdrop-blur-md">
         <div class="glass-panel w-[400px]">
             <h2 class="text-2xl bungee text-yellow-400 mb-6 text-center">Tienda Real</h2>
@@ -176,75 +162,50 @@
         </div>
     </div>
 
-    <!-- Pause Menu -->
+    <!-- Menú de Pausa -->
     <div id="pause-overlay" class="ui-overlay hidden bg-black/50 backdrop-blur-sm">
         <div class="glass-panel text-center">
             <h2 class="text-5xl bungee text-white mb-8">PAUSA</h2>
             <div class="flex flex-col gap-4">
                 <button onclick="togglePause()" class="btn-candy">CONTINUAR</button>
-                <button onclick="openAchievements()" class="btn-candy bg-yellow-600">LOGROS (20)</button>
-                <button onclick="location.reload()" class="opacity-50 text-sm bungee">SALIR</button>
+                <button onclick="openAchievements('pause-overlay')" class="btn-candy bg-yellow-600">LOGROS</button>
+                <button onclick="window.location.reload()" class="opacity-50 text-sm bungee">SALIR AL INICIO</button>
             </div>
         </div>
     </div>
 
-    <!-- Achievements Menu -->
+    <!-- Menú de Logros -->
     <div id="achievements-overlay" class="ui-overlay hidden bg-black/80">
-        <div class="glass-panel w-[500px] h-[500px] flex flex-col">
+        <div class="glass-panel w-[500px] h-[550px] flex flex-col">
             <h2 class="text-2xl bungee text-yellow-400 mb-4">Trofeos Dulces</h2>
             <div id="ach-list" class="flex-grow overflow-y-auto pr-2 space-y-2"></div>
-            <button onclick="showScreen('pause-overlay')" class="mt-4 btn-candy w-full">ATRÁS</button>
+            <button id="ach-back-btn" class="mt-4 btn-candy w-full">ATRÁS</button>
         </div>
     </div>
 
-    <!-- Credits Overlay -->
+    <!-- Créditos -->
     <div id="credits-overlay" class="ui-overlay hidden bg-black overflow-hidden">
         <div id="credits-container" class="space-y-16">
             <div>
                 <h3 class="bungee text-pink-500 text-6xl mb-4">¡VICTORIA DULCE!</h3>
                 <p class="text-gray-400">El Budín Ancestral ha sido derrotado</p>
             </div>
-            
             <div class="space-y-4">
                 <p class="text-yellow-400 bungee text-xl">UNA PRODUCCIÓN DE</p>
                 <p class="text-white text-4xl bungee">STUDIO SICHE MICHE</p>
             </div>
-
             <div class="space-y-4">
                 <p class="text-yellow-400 bungee text-xl">DIRECTOR</p>
                 <p class="text-white text-4xl bungee">AITOR</p>
             </div>
-
-            <div class="space-y-4">
-                <p class="text-yellow-400 bungee text-xl">DISEÑO DE PERSONAJES Y MUNDO</p>
-                <p class="text-white text-3xl bungee">AITOR</p>
-            </div>
-
-            <div class="space-y-4">
-                <p class="text-yellow-400 bungee text-xl">JEFE DE PROGRAMACIÓN</p>
-                <p class="text-white text-3xl bungee">STUDIO SICHE MICHE</p>
-            </div>
-
-            <div class="space-y-4">
-                <p class="text-yellow-400 bungee text-xl">CONTROL DE CALIDAD (QA)</p>
-                <p class="text-white text-2xl bungee">EQUIPO SICHE MICHE</p>
-            </div>
-
-            <div class="space-y-4">
-                <p class="text-yellow-400 bungee text-xl">AGRADECIMIENTOS ESPECIALES</p>
-                <p class="text-white text-xl">A todos los amantes del azúcar</p>
-                <p class="text-white text-xl">A los cupcakes que cayeron en batalla</p>
-            </div>
-
             <div class="pt-20">
                 <p class="text-pink-500 bungee text-2xl">GRACIAS POR JUGAR</p>
-                <button onclick="location.reload()" class="btn-candy mt-10">VOLVER AL MENÚ</button>
-                <p class="text-white/30 text-[10px] mt-4 bungee italic">hay cosas raras ahi abajo</p>
+                <button onclick="window.location.reload()" class="btn-candy mt-10">VOLVER AL MENÚ</button>
             </div>
         </div>
     </div>
 
-    <!-- Post-Credits Scene -->
+    <!-- Escena Post-Créditos -->
     <div id="post-credits-scene">
         <div class="text-center">
             <p class="bungee text-gray-500 text-sm mb-6 uppercase tracking-widest">Sótano del castillo de azúcar...</p>
@@ -254,16 +215,12 @@
             </div>
             <h2 class="bungee text-white text-5xl mb-2 glitch-text">MR CUPCAKE 3</h2>
             <h3 class="bungee text-red-600 text-2xl mb-6">EL CAPÍTULO FINAL</h3>
-            <div class="bg-red-600/20 p-4 rounded-xl border border-red-600/50">
-                <p class="bungee text-white text-lg uppercase">La Venganza del Hijo del Budín</p>
-                <p class="text-yellow-400 mt-2 text-sm bungee">ABRIL 2026</p>
-            </div>
-            <button onclick="location.reload()" class="btn-candy mt-12 bg-gray-900 border-gray-700">SALIR AL MENÚ</button>
+            <button onclick="window.location.reload()" class="btn-candy mt-12 bg-gray-900 border-gray-700">SALIR AL MENÚ</button>
         </div>
     </div>
 
-    <!-- Character Selection -->
-    <div id="char-selection" class="ui-overlay bg-[#020617] transition-opacity duration-500">
+    <!-- Selección de Personaje -->
+    <div id="char-selection" class="ui-overlay bg-[#020617]">
         <h1 class="text-6xl mb-14 text-white text-center bungee floating">
             <span class="text-[#ff4d6d]">MR CUPCAKE 2</span><br>
             <span class="text-xl opacity-50">El Retorno</span>
@@ -275,16 +232,21 @@
             </div>
             <div onclick="selectCharacter('hechicera')" class="cursor-pointer group text-center transition-transform hover:scale-105">
                 <div class="w-40 h-56 bg-purple-900/20 border-4 border-purple-500/30 rounded-3xl flex items-center justify-center group-hover:border-purple-400 shadow-xl"><canvas id="previewHechicera" width="100" height="120"></canvas></div>
-                <span class="bungee text-purple-400 mt-4 block text-xl">Lady Azúcar</span>
+                <span class="bungee text-purple-400 mt-4 block text-xl">Ms Hechicera</span>
             </div>
         </div>
+        <button onclick="openAchievements('char-selection')" class="mt-12 btn-candy bg-blue-800 text-sm py-2">🏆 VER LOGROS</button>
     </div>
 
-    <!-- Level Selector -->
+    <!-- Selector de Niveles -->
     <div id="level-selector" class="ui-overlay hidden bg-[#0f172a]">
         <h2 class="text-4xl mb-10 bungee text-blue-400">Selecciona Nivel</h2>
         <div id="levelGrid" class="grid grid-cols-5 gap-4"></div>
-        <button onclick="showScreen('char-selection')" class="mt-12 text-pink-400 bungee hover:underline">← Cambiar Heroe</button>
+        <div class="flex gap-6 mt-12 items-center">
+            <button onclick="showScreen('char-selection')" class="text-pink-400 bungee hover:underline">← Cambiar Heroe</button>
+            <div class="w-[2px] h-6 bg-white/20"></div>
+            <button onclick="openAchievements('level-selector')" class="text-yellow-400 bungee hover:underline flex items-center gap-2">🏆 Logros</button>
+        </div>
     </div>
 </div>
 
@@ -294,7 +256,7 @@
     const GAME_WIDTH = 800; const GAME_HEIGHT = 600; const GROUND_Y = 520;
     canvas.width = GAME_WIDTH; canvas.height = GAME_HEIGHT;
 
-    /** --- ACHIEVEMENT SYSTEM --- **/
+    /** --- SISTEMA DE LOGROS (Persistence) --- **/
     const achievements = [
         {id:'start', name:'Dulce Inicio', desc:'Juega tu primera partida', earned: false},
         {id:'kill1', name:'Primer Enemigo', desc:'Derrota a un budín', earned: false},
@@ -306,22 +268,39 @@
         {id:'lvl10', name:'Piloto Pro', desc:'Llega al nivel 10', earned: false},
         {id:'hp5', name:'Indestructible', desc:'Ten 5 corazones a la vez', earned: false},
         {id:'shield', name:'Muro de Caramelo', desc:'Usa un escudo', earned: false},
-        {id:'pacifist', name:'Pacifista', desc:'Recorre 1000m sin disparar', earned: false},
         {id:'dead', name:'Migajas', desc:'Muere por primera vez', earned: false},
         {id:'speed', name:'A Toda Mecha', desc:'Usa las botas de azúcar', earned: false},
         {id:'fire', name:'Metralleta', desc:'Usa el fuego rápido', earned: false},
         {id:'coins500', name:'Millonario', desc:'Consigue 1500 USD en total', earned: false},
         {id:'swap', name:'Multifacético', desc:'Prueba ambos personajes', earned: false},
         {id:'pause', name:'Descanso Necesario', desc:'Pausa el juego 5 veces', earned: false},
-        {id:'air', name:'Aviador', desc:'Mantente en el aire 10 segundos', earned: false},
-        {id:'flawless', name:'Perfecto', desc:'Termina un nivel sin daño', earned: false},
         {id:'master', name:'Maestro Pastelero', desc:'Completa el nivel 19', earned: false}
     ];
+
+    // Cargar logros guardados INMEDIATAMENTE
+    function loadSavedAchievements() {
+        try {
+            const saved = localStorage.getItem('mrcupcake2_achievements');
+            if (saved) {
+                const earnedIds = JSON.parse(saved);
+                achievements.forEach(ach => {
+                    if (earnedIds.includes(ach.id)) ach.earned = true;
+                });
+            }
+        } catch(e) { console.error("Error cargando logros", e); }
+    }
+
+    // Guardar logros en localStorage
+    function saveAchievements() {
+        const earnedIds = achievements.filter(a => a.earned).map(a => a.id);
+        localStorage.setItem('mrcupcake2_achievements', JSON.stringify(earnedIds));
+    }
 
     function unlockAch(id) {
         const ach = achievements.find(a => a.id === id);
         if(ach && !ach.earned) {
             ach.earned = true;
+            saveAchievements(); // Persistir inmediatamente
             const toast = document.getElementById('achievement-toast');
             document.getElementById('ach-name').textContent = ach.name;
             toast.classList.add('show');
@@ -329,7 +308,7 @@
         }
     }
 
-    /** --- STATE VARIABLES --- **/
+    /** --- VARIABLES DE ESTADO --- **/
     let currentState = 'START';
     let isPaused = false;
     let isShopOpen = false;
@@ -344,82 +323,49 @@
 
     let player = { x: 100, y: 300, w: 50, h: 65, hp: 3, lastFired: 0, vy: 0 };
     let bullets = [], enemies = [], particles = [];
+    let enemyBullets = [], gaps = [];
     let keys = {};
     let boss = null;
-    let creditsTimeout = null;
 
-    /** --- ENTITY RENDERING --- **/
+    /** --- RENDERIZADO --- **/
     function drawEntity(ctx, x, y, type, isPreview = false) {
         ctx.save();
         if(!isPreview) ctx.translate(0, Math.sin(Date.now() / 200) * 3);
         
-        const isH = type === 'hechicera';
-        const colorMain = isH ? '#a855f7' : '#3b82f6';
-        const colorDark = isH ? '#6b21a8' : '#1e3a8a';
-        
-        ctx.fillStyle = isH ? '#ec4899' : '#ef4444';
-        ctx.beginPath();
-        ctx.moveTo(x + 5, y + 20);
-        ctx.quadraticCurveTo(x - 15 - Math.sin(Date.now()/100)*5, y + 40, x + 5, y + 60);
-        ctx.fill();
-
-        ctx.fillStyle = '#f8fafc';
-        ctx.fillRect(x + 5, y + 20, 40, 40);
-        ctx.strokeStyle = colorDark; ctx.lineWidth = 2;
-        ctx.strokeRect(x + 5, y + 20, 40, 40);
-        
-        ctx.fillStyle = colorMain;
-        ctx.fillRect(x + 15, y + 30, 20, 10);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(x + 25, y + 20, 22, Math.PI, 0);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = isH ? '#f472b6' : '#60a5fa';
-        ctx.shadowBlur = 10; ctx.shadowColor = ctx.fillStyle;
-        ctx.fillRect(x + 12, y + 10, 8, 4);
-        ctx.fillRect(x + 30, y + 10, 8, 4);
-        ctx.shadowBlur = 0;
-
+        if (type === 'cupcake') {
+            ctx.fillStyle = '#4a2c2a'; ctx.beginPath(); ctx.arc(x + 25, y + 20, 30, Math.PI, 0); ctx.fill();
+            ctx.fillStyle = '#0055aa'; ctx.fillRect(x + 10, y + 20, 30, 45);
+            ctx.fillStyle = '#cc2222'; ctx.fillRect(x + 8, y + 40, 34, 15);
+            ctx.fillStyle = 'white'; ctx.beginPath(); ctx.arc(x + 18, y + 30, 8, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(x + 32, y + 30, 8, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = 'black'; ctx.beginPath(); ctx.arc(x + 18, y + 30, 3, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(x + 32, y + 30, 3, 0, Math.PI * 2); ctx.fill();
+        } else {
+            ctx.fillStyle = '#ec4899'; ctx.beginPath(); ctx.moveTo(x + 5, y + 20); ctx.quadraticCurveTo(x - 15 - Math.sin(Date.now()/100)*5, y + 40, x + 5, y + 60); ctx.fill();
+            ctx.fillStyle = '#f8fafc'; ctx.fillRect(x + 5, y + 20, 40, 40);
+            ctx.strokeStyle = '#6b21a8'; ctx.lineWidth = 2; ctx.strokeRect(x + 5, y + 20, 40, 40);
+            ctx.fillStyle = '#a855f7'; ctx.fillRect(x + 15, y + 30, 20, 10);
+            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(x + 25, y + 20, 22, Math.PI, 0); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = '#f472b6'; ctx.fillRect(x + 12, y + 10, 8, 4); ctx.fillRect(x + 30, y + 10, 8, 4);
+        }
         ctx.restore();
     }
 
     function drawBudin(ctx, x, y, w, h, isBoss = false) {
         ctx.save();
-        ctx.fillStyle = '#4a2c2a'; 
-        ctx.beginPath();
-        ctx.moveTo(x + (w*0.1), y + h);
-        ctx.lineTo(x + w - (w*0.1), y + h);
-        ctx.lineTo(x + w - (w*0.2), y + (h*0.2));
-        ctx.lineTo(x + (w*0.2), y + (h*0.2));
-        ctx.closePath();
-        ctx.fill();
-        ctx.strokeStyle = isBoss ? '#fbbf24' : '#2d1a18';
-        ctx.lineWidth = isBoss ? 6 : 2;
-        ctx.stroke();
-
-        ctx.fillStyle = isBoss ? '#facc15' : '#701a75';
-        ctx.beginPath();
-        ctx.arc(x + w/2, y + (h*0.2), w/2 - (w*0.1), Math.PI, 0);
-        ctx.fill();
-
+        ctx.fillStyle = '#4a2c2a'; ctx.beginPath(); ctx.moveTo(x + (w*0.1), y + h); ctx.lineTo(x + w - (w*0.1), y + h);
+        ctx.lineTo(x + w - (w*0.2), y + (h*0.2)); ctx.lineTo(x + (w*0.2), y + (h*0.2)); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = isBoss ? '#fbbf24' : '#2d1a18'; ctx.lineWidth = isBoss ? 6 : 2; ctx.stroke();
+        ctx.fillStyle = isBoss ? '#facc15' : '#701a75'; ctx.beginPath(); ctx.arc(x + w/2, y + (h*0.2), w/2 - (w*0.1), Math.PI, 0); ctx.fill();
         ctx.fillStyle = isBoss ? 'white' : '#f472b6';
-        ctx.shadowBlur = isBoss ? 25 : 15; 
-        ctx.shadowColor = ctx.fillStyle;
-        const eyeSize = w * 0.15;
-        ctx.fillRect(x + (w*0.2), y + (h*0.4), eyeSize, eyeSize);
-        ctx.fillRect(x + w - (w*0.2) - eyeSize, y + (h*0.4), eyeSize, eyeSize);
+        ctx.fillRect(x + (w*0.2), y + (h*0.4), w*0.15, w*0.15); ctx.fillRect(x + w - (w*0.2) - (w*0.15), y + (h*0.4), w*0.15, w*0.15);
         ctx.restore();
     }
 
-    /** --- GAME LOGIC --- **/
+    /** --- LÓGICA DE JUEGO --- **/
     function selectCharacter(hero) { 
         if(selectedHero !== hero) unlockAch('swap');
-        selectedHero = hero; 
-        showScreen('level-selector'); 
-        renderLevelGrid(); 
+        selectedHero = hero; showScreen('level-selector'); renderLevelGrid(); 
     }
 
     function renderLevelGrid() {
@@ -436,11 +382,14 @@
     function startLevel(num) {
         currentLevelNum = num; player.hp = 3; player.x = 100; cameraX = 0;
         bullets = []; enemies = []; particles = []; boss = null;
+        enemyBullets = []; gaps = [];
         const isAir = num >= 10;
         player.y = isAir ? 300 : GROUND_Y - player.h;
         player.vy = 0;
         
         document.getElementById('boss-hp-bar').classList.add('hidden');
+        document.getElementById('win-level-overlay').classList.add('hidden');
+        document.getElementById('win-banner').classList.remove('active');
 
         if(num === 20) {
             unlockAch('boss');
@@ -451,13 +400,31 @@
             if(num === 10) unlockAch('lvl10');
             if(num === 19) unlockAch('master');
 
+            if(!isAir) {
+                for(let x=600; x<5500; x+= Math.random() * 600 + 300) {
+                    gaps.push({ x: x, w: 120 + Math.random() * 80 });
+                }
+            }
+
             for(let x=800; x<6000; x+= (750 - num*12)) {
-                enemies.push({x, y: isAir ? 100 + Math.random()*350 : GROUND_Y-50, w:55, h:55, type: 'mini'});
+                let isOverGap = gaps.some(g => x + 27 > g.x && x + 27 < g.x + g.w);
+                if(!isOverGap || isAir) {
+                    enemies.push({
+                        x, y: isAir ? 100 + Math.random()*350 : GROUND_Y-50, 
+                        w:55, h:55, type: 'mini',
+                        lastFired: Date.now() + Math.random() * 2000,
+                        fireRate: 1500 + Math.random() * 2000
+                    });
+                }
             }
         }
 
-        showScreen('game-hud'); currentState = 'PLAYING'; unlockAch('start');
-        updateHUD(); requestAnimationFrame(update);
+        showScreen('game-hud'); 
+        currentState = 'PLAYING'; 
+        isPaused = false; isShopOpen = false;
+        unlockAch('start');
+        updateHUD(); 
+        requestAnimationFrame(update);
     }
 
     function togglePause() {
@@ -488,80 +455,65 @@
         }
     }
 
-    function showCredits() {
-        currentState = 'CREDITS';
-        showScreen('credits-overlay');
-        setTimeout(() => {
-            document.getElementById('credits-overlay').classList.add('active');
-            
-            // Post-credits trigger
-            creditsTimeout = setTimeout(() => {
-                showPostCredits();
-            }, 26000);
-        }, 100);
-    }
-
-    function showPostCredits() {
-        document.getElementById('post-credits-scene').classList.add('active');
-        const vCtx = document.getElementById('villainPreview').getContext('2d');
-        vCtx.clearRect(0,0,100,120);
-        drawBudin(vCtx, 25, 40, 50, 50, true);
-    }
-
     function update() {
-        if(currentState !== 'PLAYING' || isShopOpen || isPaused) return;
+        if(currentState !== 'PLAYING' || isShopOpen || isPaused || currentState === 'WIN_BANNER') {
+            if (currentState === 'PLAYING' || currentState === 'WIN_BANNER') requestAnimationFrame(update);
+            return;
+        }
         
         const isAir = currentLevelNum >= 10;
-        
         if (isAir) {
             if (keys['arrowup']) player.y -= moveSpeed;
             if (keys['arrowdown']) player.y += moveSpeed;
         } else {
+            let px = player.x + player.w / 2;
+            let overGap = gaps.some(g => px > g.x && px < g.x + g.w);
+            
             player.vy += 0.8; player.y += player.vy;
-            if(player.y > GROUND_Y - player.h) { player.y = GROUND_Y - player.h; player.vy = 0; }
-            if(keys['arrowup'] && player.y >= GROUND_Y - player.h) player.vy = -17;
+            if(!overGap && player.y > GROUND_Y - player.h) { 
+                player.y = GROUND_Y - player.h; player.vy = 0; 
+            }
+            if(keys['arrowup'] && !overGap && player.y >= GROUND_Y - player.h) player.vy = -17;
+            
+            if(player.y > GAME_HEIGHT) {
+                player.hp--; updateHUD();
+                if(player.hp <= 0) { unlockAch('dead'); window.location.reload(); }
+                else {
+                    let safeX = player.x - 250;
+                    while(safeX > 0 && gaps.some(g => safeX + player.w/2 > g.x && safeX + player.w/2 < g.x + g.w)) { safeX -= 50; }
+                    player.x = Math.max(0, safeX); player.y = -50; player.vy = 0;
+                    isInvulnerable = true; setTimeout(() => isInvulnerable=false, 2000);
+                }
+            }
         }
         if (keys['arrowleft']) player.x -= moveSpeed;
         if (keys['arrowright']) player.x += moveSpeed;
 
-        if(currentLevelNum === 20) {
-            if(player.x < 0) player.x = 0;
-            if(player.x > GAME_WIDTH - player.w) player.x = GAME_WIDTH - player.w;
+        if(currentLevelNum < 20) {
+            let targetCameraX = player.x - 200;
+            if (targetCameraX > cameraX) cameraX += (targetCameraX - cameraX) * 0.1;
+        } else {
+            cameraX = 0; 
+            if(player.x < 0) player.x = 0; if(player.x > GAME_WIDTH - player.w) player.x = GAME_WIDTH - player.w;
         }
 
         if ((keys['x'] || keys[' ']) && Date.now() - player.lastFired > fireRate) {
             const bulletColor = selectedHero === 'cupcake' ? '#38bdf8' : '#e879f9';
             bullets.push({ x: player.x + 45, y: player.y + 25, vx: 22, color: bulletColor });
             player.lastFired = Date.now();
-            for(let i=0; i<5; i++) {
-                particles.push({ x: player.x + 50, y: player.y + 25, vx: Math.random() * 8, vy: (Math.random() - 0.5) * 6, life: 1, color: bulletColor });
-            }
         }
-
-        const step = (currentLevelNum === 20) ? 0 : 3.5 + (currentLevelNum * 0.1);
-        cameraX += step; 
-        if(currentLevelNum !== 20) player.x += step;
 
         if(boss) {
             boss.x += Math.sin(Date.now() / 1000) * 3;
             boss.y += Math.cos(Date.now() / 500) * 4;
-            
             if (!isInvulnerable && player.x < boss.x + boss.w && player.x + player.w > boss.x && player.y < boss.y + boss.h && player.y + player.h > boss.y) {
-                hurtPlayer();
-                player.x -= 80;
+                hurtPlayer(); player.x -= 80;
             }
-
             bullets.forEach((b, bi) => {
                 if (b.x > boss.x && b.x < boss.x + boss.w && b.y > boss.y && b.y < boss.y + boss.h) {
-                    boss.hp--;
-                    bullets.splice(bi, 1);
+                    boss.hp--; bullets.splice(bi, 1);
                     document.getElementById('boss-hp-fill').style.width = (boss.hp / boss.maxHp * 100) + '%';
-                    for(let j=0; j<8; j++) particles.push({x: b.x, y: b.y, vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10, life: 0.8, color: '#ffffff'});
-                    if(boss.hp <= 0) {
-                        coins += 1000;
-                        unlockAch('win');
-                        showCredits(); 
-                    }
+                    if(boss.hp <= 0) { coins += 1000; unlockAch('win'); showCredits(); }
                 }
             });
         }
@@ -573,90 +525,100 @@
             bullets.forEach((b, bi) => {
                 if (b.x > en.x && b.x < en.x + en.w && b.y > en.y && b.y < en.y + en.h) {
                     enemies.splice(i, 1); bullets.splice(bi, 1);
-                    coins += 15;
-                    unlockAch('kill1');
-                    for(let j=0; j<10; j++) particles.push({x: en.x + en.w/2, y: en.y + en.h/2, vx: (Math.random()-0.5)*12, vy: (Math.random()-0.5)*12, life: 1, color: '#fcd34d'});
+                    coins += 15; unlockAch('kill1');
                     if(coins >= 100) unlockAch('rich');
                     updateHUD();
                 }
             });
+
+            if (Date.now() - en.lastFired > en.fireRate && en.x < cameraX + GAME_WIDTH && en.x > cameraX) {
+                enemyBullets.push({ x: en.x, y: en.y + 20, vx: -5, w: 12, h: 12 });
+                en.lastFired = Date.now();
+            }
         });
 
-        bullets.forEach((b, i) => {
-            b.x += b.vx;
-            if(b.x > player.x + 900) bullets.splice(i, 1);
-            if(Math.random() > 0.5) particles.push({x: b.x, y: b.y, vx: -2, vy: (Math.random()-0.5)*2, life: 0.5, color: b.color});
+        enemyBullets.forEach((eb, i) => {
+            eb.x += eb.vx;
+            if (eb.x < cameraX - 100) enemyBullets.splice(i, 1);
+            else if (!isInvulnerable && player.x < eb.x + eb.w && player.x + player.w > eb.x && player.y < eb.y + eb.h && player.y + player.h > eb.y) {
+                enemyBullets.splice(i, 1);
+                hurtPlayer();
+            }
         });
 
-        if(currentLevelNum !== 20 && player.x > 6000) winLevel();
+        bullets.forEach((b, i) => { b.x += b.vx; if(b.x > player.x + 900) bullets.splice(i, 1); });
 
+        if(currentLevelNum !== 20 && player.x > 6000) showWinBanner();
         draw();
         requestAnimationFrame(update);
     }
 
     function draw() {
         ctx.clearRect(0,0, GAME_WIDTH, GAME_HEIGHT);
-        ctx.save(); 
-        if(currentLevelNum !== 20) ctx.translate(-cameraX, 0);
+        ctx.save(); ctx.translate(-cameraX, 0);
+        ctx.fillStyle = '#0f172a'; ctx.fillRect(cameraX, GROUND_Y, GAME_WIDTH * 2, GAME_HEIGHT - GROUND_Y); 
         
-        ctx.fillStyle = '#0f172a';
-        ctx.fillRect(currentLevelNum === 20 ? 0 : cameraX, GROUND_Y, GAME_WIDTH * 10, 80);
-        
-        ctx.fillStyle = 'white';
-        for(let i=0; i<30; i++) {
-            let sx = (currentLevelNum === 20 ? 0 : cameraX) + (i*200) % (GAME_WIDTH * 2);
-            ctx.globalAlpha = 0.2;
-            ctx.fillRect(sx, 100 + (i*90)%400, 2, 2);
-        }
-        ctx.globalAlpha = 1;
-
-        particles.forEach((p, i) => {
-            p.x += p.vx; p.y += p.vy; p.life -= 0.03;
-            if(p.life <= 0) particles.splice(i,1);
-            else {
-                ctx.fillStyle = p.color; ctx.globalAlpha = p.life;
-                ctx.beginPath(); ctx.arc(p.x, p.y, 2 + p.life * 2, 0, Math.PI*2); ctx.fill();
+        gaps.forEach(g => {
+            if (g.x + g.w > cameraX && g.x < cameraX + GAME_WIDTH) {
+                ctx.clearRect(g.x, GROUND_Y, g.w, GAME_HEIGHT - GROUND_Y);
             }
         });
-        ctx.globalAlpha = 1;
 
         if(isInvulnerable) {
             ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3; ctx.setLineDash([5, 5]);
-            ctx.beginPath(); ctx.arc(player.x + 25, player.y + 30, 50, 0, Math.PI*2); ctx.stroke();
-            ctx.setLineDash([]);
+            ctx.beginPath(); ctx.arc(player.x + 25, player.y + 30, 50, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
         }
-
         drawEntity(ctx, player.x, player.y, selectedHero);
         enemies.forEach(en => drawBudin(ctx, en.x, en.y, en.w, en.h, false));
         if(boss) drawBudin(ctx, boss.x, boss.y, boss.w, boss.h, true);
-
         bullets.forEach(b => { 
-            ctx.save();
-            ctx.fillStyle = b.color;
-            ctx.shadowBlur = 15; ctx.shadowColor = b.color;
-            ctx.beginPath(); ctx.ellipse(b.x, b.y, 15, 6, 0, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = "white";
-            ctx.beginPath(); ctx.ellipse(b.x + 5, b.y, 8, 3, 0, 0, Math.PI * 2); ctx.fill();
-            ctx.restore();
+            ctx.fillStyle = b.color; ctx.beginPath(); ctx.ellipse(b.x, b.y, 15, 6, 0, 0, Math.PI * 2); ctx.fill();
         });
-
+        enemyBullets.forEach(eb => {
+            ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(eb.x + eb.w/2, eb.y + eb.h/2, eb.w/2, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(eb.x + eb.w/2, eb.y + eb.h/2, eb.w/4, 0, Math.PI*2); ctx.fill();
+        });
         ctx.restore();
     }
 
     function hurtPlayer() { 
         player.hp--; updateHUD(); 
-        if(player.hp <= 0) { unlockAch('dead'); location.reload(); } 
+        if(player.hp <= 0) { unlockAch('dead'); window.location.reload(); } 
     }
 
     function updateHUD() {
-        document.getElementById('hud-lives').innerHTML = '❤️'.repeat(player.hp);
+        document.getElementById('hud-lives').innerHTML = '❤️'.repeat(Math.max(0, player.hp));
         document.getElementById('hud-coins').textContent = coins;
         document.getElementById('hud-lvl').textContent = currentLevelNum;
     }
 
-    function winLevel() { currentState = 'WIN'; showScreen('level-selector'); }
+    function showWinBanner() {
+        currentState = 'WIN_BANNER';
+        document.getElementById('win-level-overlay').classList.remove('hidden');
+        setTimeout(() => document.getElementById('win-banner').classList.add('active'), 10);
+    }
 
-    function openAchievements() {
+    function closeWinBanner() {
+        document.getElementById('win-banner').classList.remove('active');
+        setTimeout(() => {
+            document.getElementById('win-level-overlay').classList.add('hidden');
+            showScreen('level-selector');
+        }, 500);
+    }
+
+    function showCredits() {
+        currentState = 'CREDITS';
+        showScreen('credits-overlay');
+        setTimeout(() => document.getElementById('credits-overlay').classList.add('active'), 100);
+        setTimeout(() => {
+            document.getElementById('post-credits-scene').classList.add('active');
+            drawBudin(document.getElementById('villainPreview').getContext('2d'), 25, 40, 50, 50, true);
+        }, 26000);
+    }
+
+    function openAchievements(prevScreenId) {
+        // Recargar desde storage antes de mostrar la lista para asegurar sincronía
+        loadSavedAchievements(); 
         const container = document.getElementById('ach-list');
         container.innerHTML = '';
         achievements.forEach(a => {
@@ -665,6 +627,7 @@
             div.innerHTML = `<div class="text-2xl">${a.earned ? '⭐' : '🔒'}</div><div><div class="bungee text-xs ${a.earned ? 'text-yellow-400' : 'text-gray-400'}">${a.name}</div><div class="text-[10px] opacity-70">${a.desc}</div></div>`;
             container.appendChild(div);
         });
+        document.getElementById('ach-back-btn').onclick = () => showScreen(prevScreenId);
         showScreen('achievements-overlay');
     }
 
@@ -674,20 +637,15 @@
     }
 
     window.onkeydown = (e) => { 
-        const key = e.key.toLowerCase();
-        keys[key] = true; 
-        
-        // Evita que la página principal haga scroll al apretar las flechas o el espacio en el juego
-        if(['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(key)) {
-            e.preventDefault();
-        }
-
+        keys[e.key.toLowerCase()] = true; 
         if(e.key === 'Escape') togglePause();
-        if(key === 't') toggleShop();
+        if(e.key.toLowerCase() === 't') toggleShop();
     };
     window.onkeyup = (e) => keys[e.key.toLowerCase()] = false;
 
+    // EL ORDEN AQUÍ ES CRUCIAL PARA LA PERSISTENCIA
     window.onload = () => {
+        loadSavedAchievements(); // 1. Cargar del storage
         drawEntity(document.getElementById('previewCupcake').getContext('2d'), 25, 30, 'cupcake', true);
         drawEntity(document.getElementById('previewHechicera').getContext('2d'), 25, 30, 'hechicera', true);
     };
