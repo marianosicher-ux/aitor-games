@@ -54,6 +54,7 @@
         .nav-links {
             display: flex;
             gap: 30px;
+            align-items: center;
         }
 
         .nav-links a {
@@ -65,6 +66,25 @@
 
         .nav-links a:hover {
             color: #9b30ff;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .puntos-badge {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
         }
 
         .btn-unirse {
@@ -129,10 +149,15 @@
             transform: translateY(-2px);
         }
 
-        /* Sección JOYAS AJUSTADA */
-        #joyas {
+        /* Secciones Generales */
+        .seccion-juegos {
             padding: 40px 20px;
             text-align: center;
+        }
+
+        #premium {
+            background: linear-gradient(to bottom, #1a1500 0%, #0b0e18 100%);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
         }
 
         .joyas-title {
@@ -174,6 +199,11 @@
             transform: translateY(-8px);
         }
 
+        .card-premium {
+            border: 2px solid #ffd700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15);
+        }
+
         .card-header {
             padding: 30px;
             text-align: center;
@@ -201,6 +231,12 @@
             background: #ff4d6d;
             color: white;
             box-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+        }
+
+        .badge-premium {
+            background: #ffd700;
+            color: #000;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         .card-icon {
@@ -237,6 +273,10 @@
             font-size: 1rem;
             text-transform: uppercase;
             transition: opacity 0.3s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
         }
         
         .btn-card:hover {
@@ -280,6 +320,7 @@
             width: 100%;
             flex-grow: 1;
             border: none;
+            background: white; /* Por si el react no tiene fondo */
         }
 
         /* Footer */
@@ -291,10 +332,42 @@
             font-size: 0.8rem;
         }
 
+        /* Notificaciones estilo Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #161b29;
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            border-left: 4px solid #ffd700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            font-weight: bold;
+            animation: slideIn 0.3s ease-out forwards;
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         @media (max-width: 768px) {
+            nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
             .hero h1 { font-size: 2.5rem; }
             .hero { height: 50vh; }
             .card { width: 100%; }
+            .nav-links { width: 100%; justify-content: center; }
+            .user-stats { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -306,9 +379,15 @@
         </div>
         <div class="nav-links">
             <a href="#" id="link-inicio">Inicio</a>
+            <a href="#premium" id="link-premium" style="color: #ffd700;">Premium</a>
             <a href="#joyas" id="link-juegos">Juegos</a>
         </div>
-        <a href="#" class="btn-unirse">Unirse</a>
+        <div class="user-stats">
+            <div class="puntos-badge" id="puntos-display">
+                ⭐ 0 Pts
+            </div>
+            <a href="#" class="btn-unirse">Unirse</a>
+        </div>
     </nav>
 
     <!-- Envolvemos el contenido principal en un div para poder ocultarlo fácil -->
@@ -316,10 +395,34 @@
         <section class="hero">
             <h1>AITOR <span>GAMES</span> LAB</h1>
             <p>El portal oficial de <b>Studio Siche Miche</b>. Disfrutá de la mejor experiencia arcade desde tu navegador.</p>
-            <a href="#joyas" class="btn-main">JUGAR AHORA</a>
+            <a href="#premium" class="btn-main">VER EXCLUSIVOS</a>
         </section>
 
-        <section id="joyas">
+        <!-- NUEVA SECCIÓN PREMIUM -->
+        <section id="premium" class="seccion-juegos">
+            <h2 class="joyas-title" style="color: #ffd700;">JUEGOS PREMIUM</h2>
+            <div class="joyas-divider" style="background: #ffd700;"></div>
+
+            <div class="grid-juegos">
+                <!-- TARJETA: Álbum Manager Mundial 2026 -->
+                <div class="card card-premium">
+                    <div class="card-header" style="background: linear-gradient(135deg, #b8860b, #161b29);">
+                        <span class="badge badge-premium">EXCLUSIVO</span>
+                        <span class="card-icon">🏆</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 style="color: #ffd700;">ÁLBUM MUNDIAL <span style="color: #fff; font-size: 0.9rem; font-weight: normal;">MANAGER</span></h3>
+                        <p>Armá tu equipo, abrí sobres y coleccioná a las figuras del 2026. ¡Costará 20 puntos desbloquearlo!</p>
+                        <!-- Acá puse album.html como ejemplo del compilado de tu código React -->
+                        <button id="btn-album" class="btn-card" style="background: #b8860b;" data-url="album.html" data-title="Álbum Mundial 2026">
+                            DESBLOQUEAR (20 Pts)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="joyas" class="seccion-juegos">
             <h2 class="joyas-title">NUESTRAS JOYAS</h2>
             <div class="joyas-divider"></div>
 
@@ -395,47 +498,129 @@
         <iframe id="game-iframe" src=""></iframe>
     </div>
 
+    <!-- Contenedor para Notificaciones -->
+    <div id="toast-container" class="toast-container"></div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Lógica para el enmascarado del juego
-            const playButtons = document.querySelectorAll('.play-btn');
+            // --- VARIABLES DEL DOM ---
             const mainContent = document.getElementById('main-content');
             const gameViewer = document.getElementById('game-viewer');
             const gameIframe = document.getElementById('game-iframe');
             const btnCerrar = document.getElementById('btn-cerrar-juego');
             const gameTitleDisplay = document.getElementById('game-title-display');
+            
             const linkInicio = document.getElementById('link-inicio');
+            const linkPremium = document.getElementById('link-premium');
             const linkJuegos = document.getElementById('link-juegos');
+            
+            const puntosDisplay = document.getElementById('puntos-display');
+            const btnAlbum = document.getElementById('btn-album');
+            const toastContainer = document.getElementById('toast-container');
 
-            // Abrir juego
-            playButtons.forEach(btn => {
+            // --- ESTADO DEL JUGADOR (Local Storage) ---
+            // Recuperamos los puntos y si ya desbloqueó el álbum. Si es la primera vez, arranca en 0 y false.
+            let puntosUsuario = parseInt(localStorage.getItem('aitor_puntos')) || 0;
+            let albumDesbloqueado = localStorage.getItem('aitor_album_unlocked') === 'true';
+
+            // Actualizar interfaz inicial
+            actualizarUI();
+
+            function actualizarUI() {
+                puntosDisplay.innerHTML = `⭐ ${puntosUsuario} Pts`;
+                
+                if (albumDesbloqueado) {
+                    btnAlbum.textContent = 'JUGAR ÁLBUM AHORA';
+                    btnAlbum.style.background = '#27ae60'; // Verde
+                } else {
+                    btnAlbum.textContent = 'DESBLOQUEAR (20 Pts)';
+                    btnAlbum.style.background = '#b8860b'; // Dorado oscuro
+                }
+            }
+
+            function mostrarToast(mensaje, colorBorde = '#ffd700') {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.style.borderLeftColor = colorBorde;
+                toast.textContent = mensaje;
+                toastContainer.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 500);
+                }, 3000);
+            }
+
+            // --- LÓGICA DE JUEGOS NORMALES ---
+            function abrirJuego(url, title) {
+                gameTitleDisplay.textContent = "Jugando ahora: " + title;
+                gameIframe.src = url; 
+                mainContent.style.display = 'none'; 
+                gameViewer.style.display = 'flex'; 
+                window.scrollTo(0, 0); 
+            }
+
+            document.querySelectorAll('.play-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
-                    // preventDefault frena el comportamiento natural del <a>, evitando que te vayas del index.html
                     e.preventDefault(); 
-                    const gameUrl = this.getAttribute('href');
-                    const gameTitle = this.getAttribute('data-title');
-                    
-                    gameTitleDisplay.textContent = "Jugando ahora: " + gameTitle;
-                    gameIframe.src = gameUrl; 
-                    
-                    mainContent.style.display = 'none'; 
-                    gameViewer.style.display = 'flex'; 
-                    
-                    window.scrollTo(0, 0); 
+                    abrirJuego(this.getAttribute('href'), this.getAttribute('data-title'));
                 });
             });
 
-            // Función para cerrar el juego
+            // --- LÓGICA DE JUEGO PREMIUM (ÁLBUM) ---
+            btnAlbum.addEventListener('click', function(e) {
+                e.preventDefault();
+                const urlAlbum = this.getAttribute('data-url');
+                const titleAlbum = this.getAttribute('data-title');
+
+                if (albumDesbloqueado) {
+                    // Si ya pagó, lo dejamos pasar directo
+                    abrirJuego(urlAlbum, titleAlbum);
+                } else {
+                    // Verificamos si le alcanza la guita (los puntos)
+                    if (puntosUsuario >= 20) {
+                        puntosUsuario -= 20;
+                        albumDesbloqueado = true;
+                        
+                        // Guardamos en localStorage para que no se le borre al recargar la página
+                        localStorage.setItem('aitor_puntos', puntosUsuario);
+                        localStorage.setItem('aitor_album_unlocked', 'true');
+                        
+                        actualizarUI();
+                        mostrarToast('¡Álbum desbloqueado, fiera! A juntar figuritas.', '#00ff88');
+                        abrirJuego(urlAlbum, titleAlbum);
+                    } else {
+                        const faltan = 20 - puntosUsuario;
+                        mostrarToast(`Te faltan ${faltan} puntos, che. Andá a jugar a Mr Cupcake para sumar más.`, '#ff4d6d');
+                    }
+                }
+            });
+
+            // --- ESCUCHA DE EVENTOS DESDE LOS IFRAMES (Mr Cupcake) ---
+            // Esto escucha cuando el juego adentro del iframe nos manda un mensaje diciendo que mataron a un budín
+            window.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'budin_killed') {
+                    puntosUsuario += 5;
+                    localStorage.setItem('aitor_puntos', puntosUsuario);
+                    actualizarUI();
+                    mostrarToast('¡Budín derrotado! +5 Puntos ⭐');
+                }
+            });
+
+            // --- NAVEGACIÓN Y CERRAR JUEGOS ---
             function cerrarJuego(e) {
                 if(e) e.preventDefault();
-                gameIframe.src = ""; // Limpia el iframe para que no siga sonando/corriendo el juego de fondo
+                gameIframe.src = ""; // Limpiamos el iframe
                 gameViewer.style.display = 'none';
                 mainContent.style.display = 'block';
             }
 
-            // Bindear botones de cierre
             btnCerrar.addEventListener('click', cerrarJuego);
             linkInicio.addEventListener('click', cerrarJuego);
+            linkPremium.addEventListener('click', function(e) {
+                cerrarJuego(e);
+                window.location.hash = "#premium"; 
+            });
             linkJuegos.addEventListener('click', function(e) {
                 cerrarJuego(e);
                 window.location.hash = "#joyas"; 
