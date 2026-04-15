@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aitor Games Lab | Studio Siche Miche</title>
     
-    <!-- SEO Básico -->
     <meta name="description" content="Aitor Games Lab: El portal oficial de Studio Siche Miche. Jugá Mr. Cupcake y Hamburguesa Challenge gratis desde tu navegador.">
     <meta name="keywords" content="juegos, arcade, indie, mr cupcake, hamburguesa challenge, jardinera al rescate, studio siche miche, aitor games">
     <meta name="author" content="Aitor Games Lab">
 
-    <!-- Meta Tags para Redes Sociales (Open Graph) -->
     <meta property="og:title" content="Aitor Games Lab | Studio Siche Miche">
     <meta property="og:description" content="Desafíos arcade en 3D y 2D. ¡Entrá y jugá ahora!">
     <meta property="og:image" content="https://aitorgames.com.ar/captura-del-juego.png">
@@ -95,6 +93,12 @@
             text-decoration: none;
             font-weight: bold;
             transition: transform 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-unirse:hover {
+            transform: scale(1.05);
         }
 
         /* Sección Hero ACHICADA */
@@ -320,7 +324,7 @@
             width: 100%;
             flex-grow: 1;
             border: none;
-            background: white; /* Por si el react no tiene fondo */
+            background: white;
         }
 
         /* Footer */
@@ -386,11 +390,10 @@
             <div class="puntos-badge" id="puntos-display">
                 ⭐ 0 Pts
             </div>
-            <a href="#" class="btn-unirse">Unirse</a>
+            <button class="btn-unirse" id="btn-unirse">Unirse</button>
         </div>
     </nav>
 
-    <!-- Envolvemos el contenido principal en un div para poder ocultarlo fácil -->
     <div id="main-content">
         <section class="hero">
             <h1>AITOR <span>GAMES</span> LAB</h1>
@@ -398,13 +401,11 @@
             <a href="#premium" class="btn-main">VER EXCLUSIVOS</a>
         </section>
 
-        <!-- NUEVA SECCIÓN PREMIUM -->
         <section id="premium" class="seccion-juegos">
             <h2 class="joyas-title" style="color: #ffd700;">JUEGOS PREMIUM</h2>
             <div class="joyas-divider" style="background: #ffd700;"></div>
 
             <div class="grid-juegos">
-                <!-- TARJETA: Álbum Manager Mundial 2026 -->
                 <div class="card card-premium">
                     <div class="card-header" style="background: linear-gradient(135deg, #b8860b, #161b29);">
                         <span class="badge badge-premium">EXCLUSIVO</span>
@@ -413,7 +414,6 @@
                     <div class="card-body">
                         <h3 style="color: #ffd700;">ÁLBUM MUNDIAL <span style="color: #fff; font-size: 0.9rem; font-weight: normal;">MANAGER</span></h3>
                         <p>Armá tu equipo, abrí sobres y coleccioná a las figuras del 2026. ¡Costará 20 puntos desbloquearlo!</p>
-                        <!-- Acá puse album.html como ejemplo del compilado de tu código React -->
                         <button id="btn-album" class="btn-card" style="background: #b8860b;" data-url="album.html" data-title="Álbum Mundial 2026">
                             DESBLOQUEAR (20 Pts)
                         </button>
@@ -428,7 +428,6 @@
 
             <div class="grid-juegos">
                 
-                <!-- TARJETA NUEVO JUEGO: Mr Cupcake 2 -->
                 <div class="card">
                     <div class="card-header" style="background: linear-gradient(135deg, #1e3a8a, #881337);">
                         <span class="badge badge-estreno">¡ESTRENO!</span>
@@ -441,7 +440,6 @@
                     </div>
                 </div>
 
-                <!-- TARJETA: Jardinera al Rescate -->
                 <div class="card">
                     <div class="card-header" style="background: linear-gradient(135deg, #1b5e20, #161b29);">
                         <span class="badge badge-nuevo">NUEVO</span>
@@ -454,7 +452,6 @@
                     </div>
                 </div>
 
-                <!-- TARJETA: Mr Cupcake -->
                 <div class="card">
                     <div class="card-header" style="background: linear-gradient(135deg, #3a1c5e, #161b29);">
                         <span class="badge">JUGABLE</span>
@@ -467,7 +464,6 @@
                     </div>
                 </div>
 
-                <!-- TARJETA: Hamburger Challenge -->
                 <div class="card">
                     <div class="card-header" style="background: linear-gradient(135deg, #5e4a1c, #161b29);">
                         <span class="badge">JUGABLE</span>
@@ -486,19 +482,14 @@
         <footer>
             <p>&copy; 2026 Studio Siche Miche. Desarrollado por Aitor Games Lab.</p>
         </footer>
-    </div> <!-- Fin de main-content -->
-
-    <!-- CONTENEDOR DEL JUEGO (Oculto por defecto) -->
-    <div id="game-viewer">
+    </div> <div id="game-viewer">
         <div class="viewer-header">
             <span id="game-title-display" style="font-weight: bold; font-style: italic; color: #00ff88;">Cargando...</span>
             <button class="btn-volver" id="btn-cerrar-juego">⬅ Volver al Menú</button>
         </div>
-        <!-- Acá es donde se carga el juego enmascarado -->
         <iframe id="game-iframe" src=""></iframe>
     </div>
 
-    <!-- Contenedor para Notificaciones -->
     <div id="toast-container" class="toast-container"></div>
 
     <script>
@@ -516,25 +507,34 @@
             
             const puntosDisplay = document.getElementById('puntos-display');
             const btnAlbum = document.getElementById('btn-album');
+            const btnUnirse = document.getElementById('btn-unirse');
             const toastContainer = document.getElementById('toast-container');
 
             // --- ESTADO DEL JUGADOR (Local Storage) ---
-            // Recuperamos los puntos y si ya desbloqueó el álbum. Si es la primera vez, arranca en 0 y false.
             let puntosUsuario = parseInt(localStorage.getItem('aitor_puntos')) || 0;
             let albumDesbloqueado = localStorage.getItem('aitor_album_unlocked') === 'true';
+            let nombreJugador = localStorage.getItem('aitor_jugador');
 
             // Actualizar interfaz inicial
             actualizarUI();
 
             function actualizarUI() {
+                // Puntos
                 puntosDisplay.innerHTML = `⭐ ${puntosUsuario} Pts`;
                 
+                // Botón Álbum
                 if (albumDesbloqueado) {
                     btnAlbum.textContent = 'JUGAR ÁLBUM AHORA';
                     btnAlbum.style.background = '#27ae60'; // Verde
                 } else {
                     btnAlbum.textContent = 'DESBLOQUEAR (20 Pts)';
                     btnAlbum.style.background = '#b8860b'; // Dorado oscuro
+                }
+
+                // Botón Usuario
+                if (nombreJugador) {
+                    btnUnirse.textContent = nombreJugador;
+                    btnUnirse.style.background = '#27ae60';
                 }
             }
 
@@ -550,6 +550,19 @@
                     setTimeout(() => toast.remove(), 500);
                 }, 3000);
             }
+
+            // --- LÓGICA BOTÓN UNIRSE (REGISTRO) ---
+            btnUnirse.addEventListener('click', function(e) {
+                e.preventDefault();
+                const nuevoNombre = prompt("¿Cuál es tu nombre de jugador, fiera?");
+                
+                if (nuevoNombre && nuevoNombre.trim() !== "") {
+                    localStorage.setItem('aitor_jugador', nuevoNombre);
+                    nombreJugador = nuevoNombre;
+                    actualizarUI();
+                    mostrarToast(`¡Bienvenido al Lab, ${nuevoNombre}!`, '#00ff88');
+                }
+            });
 
             // --- LÓGICA DE JUEGOS NORMALES ---
             function abrirJuego(url, title) {
@@ -574,15 +587,12 @@
                 const titleAlbum = this.getAttribute('data-title');
 
                 if (albumDesbloqueado) {
-                    // Si ya pagó, lo dejamos pasar directo
                     abrirJuego(urlAlbum, titleAlbum);
                 } else {
-                    // Verificamos si le alcanza la guita (los puntos)
                     if (puntosUsuario >= 20) {
                         puntosUsuario -= 20;
                         albumDesbloqueado = true;
                         
-                        // Guardamos en localStorage para que no se le borre al recargar la página
                         localStorage.setItem('aitor_puntos', puntosUsuario);
                         localStorage.setItem('aitor_album_unlocked', 'true');
                         
@@ -591,13 +601,12 @@
                         abrirJuego(urlAlbum, titleAlbum);
                     } else {
                         const faltan = 20 - puntosUsuario;
-                        mostrarToast(`Te faltan ${faltan} puntos, che. Andá a jugar a Mr Cupcake para sumar más.`, '#ff4d6d');
+                        mostrarToast(`Te faltan ${faltan} puntos, che. Andá a jugar para sumar más.`, '#ff4d6d');
                     }
                 }
             });
 
-            // --- ESCUCHA DE EVENTOS DESDE LOS IFRAMES (Mr Cupcake) ---
-            // Esto escucha cuando el juego adentro del iframe nos manda un mensaje diciendo que mataron a un budín
+            // --- ESCUCHA DE EVENTOS DESDE LOS IFRAMES ---
             window.addEventListener('message', (event) => {
                 if (event.data && event.data.type === 'budin_killed') {
                     puntosUsuario += 5;
